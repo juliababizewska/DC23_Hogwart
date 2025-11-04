@@ -2,25 +2,40 @@
     "full_name": "Leopold Świetlisty",
     "email": "leopold.swiatlo@lumosart.pl",
     "phone": "+48700321900",
-    "address": "GWIAZDA ESTRADY MAGICZNEJ",
-    "profile": [
-        "# E-mail: leopold.swiatlo@lumosart.pl",
-        "GWIAZDA ESTRADY MAGICZNEJ",
-        "Artysta sceniczny, aktor dramatyczny, recytator i performer. Uważam, że magia to teatr, a teatr to magia. Szukam miejsca, w którym moja ekspresja może rozbłysnąć i oświecić innych."
+    "profile": "GWIAZDA ESTRADY MAGICZNEJ Artysta sceniczny, aktor dramatyczny, recytator i performer. Uważam, że magia to teatr, a teatr to magia. Szukam miejsca, w którym moja ekspresja może rozbłysnąć i oświecić innych.",
+    "education": [
+        {
+            "school": "Akademia Sztuk Magicznych / Lumenia",
+            "period": "2009 – 2013",
+            "description": [
+                "Kierunek: Sztuka performansu i magia światła."
+            ]
+        }
+    ],
+    "experience": [
+        {
+            "title": "Aktor / Teatr „Lumos et Umbra”",
+            "period": "2015 - 2025",
+            "tasks": [
+                "Role w spektaklach “Zaklęte Cienie” i “Miłość wśród Dementorów”",
+                "Reżyserowanie własnych etiud magicznych",
+                "Prowadzenie warsztatów “Dykcja i magia głosu”"
+            ]
+        },
+        {
+            "title": "Asystent Oświetleniowca / Festiwal Czarnego Teatru",
+            "period": "2013 - 2015",
+            "tasks": [
+                "Obsługa zaklęć świetlnych i reflektorów iluzorycznych",
+                "Tworzenie scenicznej aury emocjonalnej"
+            ]
+        }
     ],
     "skills": [
         "Recytacja zaklęć z intonacją sceniczną",
         "Magia świetlna i wizualna",
         "Improwizacja dramatyczna",
-        "Prowadzenie wystąpień publicznych",
-        "DOŚWIADCZENIE ZAWODOWE",
-        "Aktor | Teatr „Lumos et Umbra” | 2015 - 2025",
-        "Role w spektaklach “Zaklęte Cienie” i “Miłość wśród Dementorów”",
-        "Reżyserowanie własnych etiud magicznych",
-        "Prowadzenie warsztatów “Dykcja i magia głosu”",
-        "Asystent Oświetleniowca | Festiwal Czarnego Teatru| 2013 - 2015",
-        "Obsługa zaklęć świetlnych i reflektorów iluzorycznych",
-        "Tworzenie scenicznej aury emocjonalnej"
+        "Prowadzenie wystąpień publicznych"
     ],
     "languages": [
         "Wspólny — biegły",

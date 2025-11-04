@@ -2,28 +2,33 @@
     "full_name": "Mirabella Blask",
     "email": "kontakt@mirabellablog.pl",
     "phone": "+48888442119",
-    "address": "Influencerka i konsultantka eliksirów urodowych. Moją misją jest szerzenie piękna i pozytywnej",
-    "profile": [
-        "INFLUENCERKA I BLOGERKA",
-        "PROFIL OSOBISTY",
-        "energii poprzez magię codzienną. Wierzę, że każdy blask zaczyna się od wewnątrz (i dobrego serum",
-        "z eliksiru świetlistego).",
-        "DOŚWIADCZENIE ZAWODOWE",
-        "Autorka kanału “Czar i Blask by Mira”",
-        "2020 - obecnie",
-        "Tworzenie treści o pielęgnacji magicznej",
-        "Testy eliksirów i kosmetyków zaklętych",
-        "Współpraca z markami magicznymi",
-        "Doradca urodowy - Perfumeria “Aurora Lux”",
-        "2017-2020",
-        "Dobór eliksirów do typu aury",
-        "Zaklęcia wygładzające i odmładzające"
-    ],
+    "profile": "Influencerka i konsultantka eliksirów urodowych. Moją misją jest szerzenie piękna i pozytywnej energii poprzez magię codzienną. Wierzę, że każdy blask zaczyna się od wewnątrz (i dobrego serum z eliksiru świetlistego). INFLUENCERKA I BLOGERKA",
     "education": [
         {
-            "school": "Specjalizacja: Uroda i magia światła",
+            "school": "Akademia Estetyki Magicznej",
             "period": "2015 - 2017",
-            "description": []
+            "description": [
+                "Specjalizacja: Uroda i magia światła"
+            ]
+        }
+    ],
+    "experience": [
+        {
+            "title": "Autorka kanału “Czar i Blask by Mira”",
+            "period": "2020 - obecnie",
+            "tasks": [
+                "Tworzenie treści o pielęgnacji magicznej",
+                "Testy eliksirów i kosmetyków zaklętych",
+                "Współpraca z markami magicznymi",
+                "Doradca urodowy - Perfumeria “Aurora Lux”"
+            ]
+        },
+        {
+            "title": "Dobór eliksirów do typu aury",
+            "period": "2017-2020",
+            "tasks": [
+                "Zaklęcia wygładzające i odmładzające"
+            ]
         }
     ],
     "skills": [

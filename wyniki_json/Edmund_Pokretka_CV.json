@@ -2,10 +2,7 @@
     "full_name": "Edmund Pokrętka",
     "email": "e.pokretka@magitech.pl",
     "phone": "+48666100433",
-    "address": "Dolina Mechaniczna",
-    "profile": [
-        "Wynalazca i konstruktor urządzeń magiczno-mechanicznych. Pasjonat eksperymentów i testowania granic magii. Nie boję się wybuchów — traktuję je jako część procesu naukowego."
-    ],
+    "profile": "Dolina Mechaniczna Wynalazca i konstruktor urządzeń magiczno-mechanicznych. Pasjonat eksperymentów i testowania granic magii. Nie boję się wybuchów — traktuję je jako część procesu naukowego.",
     "education": [
         {
             "school": "Inżynier / Politechnika Magotechnologiczna w Spirali",

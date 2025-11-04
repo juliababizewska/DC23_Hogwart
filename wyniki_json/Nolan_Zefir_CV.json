@@ -2,38 +2,65 @@
     "full_name": "Nolan Zefir",
     "email": "nolan.zefir@zielonyszlak.org",
     "phone": "+48700432118",
-    "address": "Stara Chata, Kraina Wschodnich Borów",
-    "profile": [
-        "27.02.2001",
-        "DOŚWIADCZENIE ZAWODOWE",
-        "Sklep “Korzeń i Mgła”",
-        "Pomocnik zielarza",
-        "2023-2025",
-        "Zbieranie składników do mikstur i eliksirów ochronnych",
-        "Uprawa i pielęgnacja magicznych roślin (m.in. Żmijolist,",
-        "Wilczozioło, Nocne Serce)",
-        "Praca z klientami i identyfikacja ingrediencji terenowych",
-        "Szumiące Bory",
-        "Praktykant w Rezerwacie Magicznych Stworzeń",
-        "2020-2023",
-        "Karmienie, pielęgnacja i oswajanie magicznych zwierząt niskiego",
-        "ryzyka",
-        "Pomoc w budowie wybiegów i barier ochronnych",
-        "Ewakuacja miniaturowych smoków podczas burzy energetycznej",
-        "Wolontariusz",
-        "Fundacja “Las Żyje”",
-        "2018-2020",
-        "Odbudowa ścieżek leśnych i naprawa tablic ostrzegawczych",
-        "Współpraca przy badaniach terenowych nad migracją świetlików",
-        "czarnomagicznych",
-        "Organizacja warsztatów ekologiczno-magicznych dla dzieci"
-    ],
+    "profile": "Stara Chata, Kraina Wschodnich Borów 27.02.2001",
     "education": [
+        {
+            "school": "w Zielonej Górze",
+            "period": null,
+            "description": [
+                "Kierunek: Magia natury i podstawy ochrony magicznej"
+            ]
+        },
         {
             "school": "Praca końcowa; Zachowanie równowagi energetycznej w",
             "period": "2017-2020",
             "description": [
                 "ekosystemach magicznych"
+            ]
+        }
+    ],
+    "experience": [
+        {
+            "title": "Sklep “Korzeń i Mgła”",
+            "period": null,
+            "tasks": [
+                "Pomocnik zielarza"
+            ]
+        },
+        {
+            "title": "Zbieranie składników do mikstur i eliksirów ochronnych",
+            "period": "2023-2025",
+            "tasks": [
+                "Uprawa i pielęgnacja magicznych roślin (m.in. Żmijolist,"
+            ]
+        },
+        {
+            "title": "Wilczozioło, Nocne Serce",
+            "period": null,
+            "tasks": [
+                "Praca z klientami i identyfikacja ingrediencji terenowych",
+                "Szumiące Bory",
+                "Praktykant w Rezerwacie Magicznych Stworzeń"
+            ]
+        },
+        {
+            "title": "Karmienie, pielęgnacja i oswajanie magicznych zwierząt niskiego",
+            "period": "2020-2023",
+            "tasks": [
+                "ryzyka",
+                "Pomoc w budowie wybiegów i barier ochronnych",
+                "Ewakuacja miniaturowych smoków podczas burzy energetycznej",
+                "Wolontariusz",
+                "Fundacja “Las Żyje”"
+            ]
+        },
+        {
+            "title": "Odbudowa ścieżek leśnych i naprawa tablic ostrzegawczych",
+            "period": "2018-2020",
+            "tasks": [
+                "Współpraca przy badaniach terenowych nad migracją świetlików",
+                "czarnomagicznych",
+                "Organizacja warsztatów ekologiczno-magicznych dla dzieci"
             ]
         }
     ],

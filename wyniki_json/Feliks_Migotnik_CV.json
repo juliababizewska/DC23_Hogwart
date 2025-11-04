@@ -2,17 +2,11 @@
     "full_name": "Feliks Migotnik",
     "email": "f.migotnik@artmagia.org",
     "phone": "+48601555404",
-    "address": "Nowy Sącz",
-    "profile": [
-        "Od ponad dekady zajmuję się tworzeniem widowisk, oraz pokazów świetlnych na potrzeby wydarzeń",
-        "kulturalnych. Moją pasją jest łączenie magii z emocjami i estetyką. Cenię harmonię, kolory i dobrą",
-        "energię w miejscu pracy. Szukam przestrzeni, gdzie mógłbym inspirować innych do patrzenia na magię",
-        "przez pryzmat sztuki."
-    ],
+    "profile": "Od ponad dekady zajmuję się tworzeniem widowisk, oraz pokazów świetlnych na potrzeby wydarzeń kulturalnych. Moją pasją jest łączenie magii z emocjami i estetyką. Cenię harmonię, kolory i dobrą energię w miejscu pracy. Szukam przestrzeni, gdzie mógłbym inspirować innych do patrzenia na magię przez pryzmat sztuki. Nowy Sącz",
     "education": [
         {
             "school": "AKADEMIA SZTUK MAGICZNYCH W LUBLINIE",
-            "period": "2008-2012",
+            "period": null,
             "description": [
                 "Licencjat z magii wizualnej i estetyki aur",
                 "Praca dyplomowa: Iluzja jako forma ekspresji magicznej świadomości"
