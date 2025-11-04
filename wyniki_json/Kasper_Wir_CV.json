@@ -1,0 +1,50 @@
+{
+    "full_name": "Kasper Wir",
+    "email": "kasperwir@magdance.com",
+    "phone": "+48555300777",
+    "address": "Instruktor tańca magicznego",
+    "profile": [
+        "energia ciała i zaklęć to jedno — wystarczy nadać rytm różdżce! Szukam",
+        "pracy, w której mogę inspirować innych do wyrażania siebie poprzez taniec.",
+        "ul. Pulsująca 5, Miastotakt",
+        "Instruktor tańca rytmicznego z pasją do łączenia ruchu i magii. Wierzę, że"
+    ],
+    "experience": [
+        {
+            "title": "2019 - OBECNIE",
+            "period": null,
+            "tasks": []
+        },
+        {
+            "title": "INSTRUKTOR TAŃCA",
+            "period": "2016 - 2019",
+            "tasks": [
+                "Akademia",
+                "Ruchu",
+                "Magicznego",
+                "Nauczanie zaklęć tanecznych i rytmicznych",
+                "Tworzenie choreografii magicznych",
+                "Organizacja pokazów energii ruchu",
+                "ANIMATOR",
+                "Festiwal",
+                "Magicznych",
+                "Dźwięków",
+                "Prowadzenie warsztatów tanecznych",
+                "Pokazy synchronicznego czarowania"
+            ]
+        }
+    ],
+    "skills": [
+        "Zaklęcia taneczno-kinetyczne",
+        "Prowadzenie grup i wydarzeń",
+        "Synchronizacja ruchu i magii",
+        "Improwizacja sceniczna"
+    ],
+    "languages": [
+        "Wspólny — biegły",
+        "Rytmiczny gesturalny — podstawowy"
+    ],
+    "footer": [
+        "Wyrażam zgodę na przetwarzanie moich danych osobowych na potrzeby rekrutacji w dowolnej instytucji magicznej lub niemagicznej."
+    ]
+}

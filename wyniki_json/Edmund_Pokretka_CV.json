@@ -1,0 +1,51 @@
+{
+    "full_name": "Edmund Pokrętka",
+    "email": "e.pokretka@magitech.pl",
+    "phone": "+48666100433",
+    "address": "Dolina Mechaniczna",
+    "profile": [
+        "Wynalazca i konstruktor urządzeń magiczno-mechanicznych. Pasjonat eksperymentów i testowania granic magii. Nie boję się wybuchów — traktuję je jako część procesu naukowego."
+    ],
+    "education": [
+        {
+            "school": "Inżynier / Politechnika Magotechnologiczna w Spirali",
+            "period": "CZERWIEC 2005",
+            "description": [
+                "Kierunek: Inżynieria magiczna"
+            ]
+        }
+    ],
+    "experience": [
+        {
+            "title": "Główny konstruktor / Pokrętka Inventions",
+            "period": "2010 – obecnie",
+            "tasks": [
+                "Twórca 43 (częściowo działających) urządzeń magicznych",
+                "Wynalazca samoczyszczącej się różdżki (wersja 3.2: eksplodowała tylko raz)",
+                "Prowadzenie badań nad łączeniem magii i mechaniki"
+            ]
+        },
+        {
+            "title": "Asystent badawczy / Instytut Magitechnologii",
+            "period": "2005 – 2010",
+            "tasks": [
+                "Prace laboratoryjne",
+                "Udział w projektach eksperymentalnych",
+                "Analiza stabilności zaklęć"
+            ]
+        }
+    ],
+    "skills": [
+        "Projektowanie urządzeń magicznych",
+        "Runotechnika",
+        "Analiza błędów zaklęć",
+        "Improwizacja techniczna"
+    ],
+    "languages": [
+        "Wspólny — biegły",
+        "Techniczny runiczny — zaawansowany"
+    ],
+    "footer": [
+        "Wyrażam zgodę na przetwarzanie moich danych osobowych na potrzeby rekrutacji w dowolnej instytucji magicznej lub niemagicznej."
+    ]
+}
