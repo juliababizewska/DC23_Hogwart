@@ -1,15 +1,12 @@
 package pl.hogwart.cvprocessor.services;
 
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.FileContent;
-import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.FileList;
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.auth.oauth2.ServiceAccountCredentials;
 import jakarta.mail.search.FlagTerm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,7 +16,6 @@ import jakarta.mail.*;
 import jakarta.mail.internet.*;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -35,28 +31,27 @@ import java.util.regex.Pattern;
 
 @Service
 public class CloudService {
-    private static String subjectRegex = "Hogwart Rekrutacja.*";
-    private static String saveDir = "src/main/resources/cvs";
+    private final String subjectRegex = "Hogwart Rekrutacja.*";
+    private final String saveDir = "src/main/resources/cvs";
 
     //Credentials to google account
-    private String password;
+    private final String password;
 
-    private String accountMail;
+    private final String accountMail;
 
-    private String keyPath;
-
-    private String rootFolderId;
+    private final String rootFolderId;
 
     private Drive drive;
 
     public CloudService(
             @Value("${google.account.app-password}")String password,
             @Value("${google.account.mail}") String accountMail,
-            @Value("${google.drive.key-path}") String keyPath,
-            @Value("${google.drive.root.folder}") String rootFolderId) {
+            @Value("${google.drive.access-token}") String token,
+            @Value("${google.drive.root.folder}") String rootFolderId,
+            @Value("${google.drive.user.id}") String userId,
+            @Value("${google.drive.user.secret}") String userSecret) {
         this.password = password;
         this.accountMail = accountMail;
-        this.keyPath = keyPath;
         this.rootFolderId = rootFolderId;
 
         // Checking and creating a folder for downloaded attachments
@@ -72,15 +67,18 @@ public class CloudService {
         try{
             final GsonFactory gsonFactory = GsonFactory.getDefaultInstance();
             final NetHttpTransport transport = new NetHttpTransport();
-            Paths.get(keyPath);
-            GoogleCredentials credentials = ServiceAccountCredentials.fromStream(
-                    new FileInputStream(Paths.get(keyPath).toFile()))
-                    .createScoped(Collections.singleton((DriveScopes.DRIVE_FILE)));
-            HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
+
+            Credential credentials = new GoogleCredential.Builder()
+                    .setTransport(transport)
+                    .setJsonFactory(gsonFactory)
+                    .setClientSecrets(userId, userSecret)
+                    .build()
+                    .setRefreshToken(token);
+
             drive = new Drive.Builder(
                     transport,
                     gsonFactory,
-                    requestInitializer)
+                    credentials)
                     .setApplicationName("HogwartCVProcessor")
                     .build();
             System.out.println("Log CloudService: Google Drive initialized");
@@ -143,8 +141,7 @@ public class CloudService {
         try {
             Object content = message.getContent();
 
-            if(content instanceof Multipart){
-                Multipart multipart = (Multipart) content;
+            if(content instanceof Multipart multipart){
                 for(int i = 0; i< multipart.getCount(); i++) {
                     Part part =  multipart.getBodyPart(i);
 
@@ -317,12 +314,13 @@ public class CloudService {
     public void sendFileToCloud(String folderName, String pathToFile){
         try{
             String folderId = createFolder(folderName);
-            if(folderId != null)
+            if(folderId != null) {
                 uploadFile(folderId, pathToFile);
+            }
             System.out.println("Log CloudService: Successfully sent a file to cloud");
         }
         catch (IOException e){
-            System.out.println("Log CloudService: Error: Couldn't create folder or file on the drive!!!");
+            System.out.println("Log CloudService: Error: Couldn't create file on the drive!!!");
             System.out.println(e.getMessage());
         }
     }
