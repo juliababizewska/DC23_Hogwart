@@ -122,7 +122,7 @@ public class CloudService {
     }
 
     private String createResponseText(boolean accepted){
-        String text = "Szanowna/y Pani/e, \n\n";
+        String text = "Szanowni Państwo, \n\n";
 
         if(accepted) {
             text = text + "Gratulujemy przejścia do następnego etapu rekrutacji.";
@@ -209,14 +209,14 @@ public class CloudService {
     }
 
     // Method sends a response email to given applicant
-    public void sendResponse(Applicant applicant, boolean accepted) {
+    public void sendResponse(String email, boolean accepted) {
         try {
             Session session = establishSmtpConnection();
             Message message = new MimeMessage(session);
 
             message.setFrom(new InternetAddress(accountMail));
             message.setSubject("Hogwart Rekrutacja - Wynik pierwszego etapu.");
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress(applicant.getEmail()));
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(email));
 
             message.setText(createResponseText(accepted));
             Transport.send(message);
@@ -311,11 +311,12 @@ public class CloudService {
     }
 
     //Method sends file under given path to google drive cloud storage
-    public void sendFileToCloud(String folderName, String pathToFile){
+    public void sendFileToCloud(String folderName, String[] pathToFiles){
         try{
             String folderId = createFolder(folderName);
             if(folderId != null) {
-                uploadFile(folderId, pathToFile);
+                for(String path : pathToFiles)
+                    uploadFile(folderId, path);
             }
             System.out.println("Log CloudService: Successfully sent a file to cloud");
         }

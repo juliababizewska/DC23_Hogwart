@@ -35,9 +35,10 @@ public class CVService {
         List<Applicant> testList = cloudService.getCVs();
         boolean testFlag = false;
         for (Applicant applicant : testList) {
-            cloudService.sendResponse(applicant, testFlag);
+            cloudService.sendResponse(applicant.getEmail(), testFlag);
             testFlag = !testFlag;
-            cloudService.sendFileToCloud(applicant.getEmail(), applicant.getPathToCV());
+            String[] testArray = {applicant.getPathToCV()};
+            cloudService.sendFileToCloud(applicant.getEmail(), testArray);
         }
         // end of cloud service test block
         try (Stream<Path> files = Files.list(Paths.get("src/main/resources/static"))) {
