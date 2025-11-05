@@ -1,5 +1,14 @@
 package pl.hogwart.cvprocessor.services;
 
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.DriveScopes;
+import com.google.api.services.drive.model.FileList;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.auth.oauth2.ServiceAccountCredentials;
 import jakarta.mail.search.FlagTerm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -9,14 +18,14 @@ import jakarta.mail.*;
 import jakarta.mail.internet.*;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -35,12 +44,44 @@ public class CloudService {
     @Value("${google.account.mail}")
     private String accountMail;
 
+    @Value("${google.drive.key-path}")
+    private String keyPath;
+
+    @Value("${google.drive.root.folder}")
+    private String rootFolderId;
+
+    private Drive drive;
+
     public CloudService(){
+        // Checking and creating a folder for downloaded attachments
         try{
             Files.createDirectories(Paths.get(saveDir));
         }
         catch(Exception e){
             System.out.println("Critical ERROR: Couldn't create download directory!!!");
+            System.out.println(e.getMessage());
+        }
+        // initializing Google Drive connection
+        try{
+            final GsonFactory gsonFactory = GsonFactory.getDefaultInstance();
+            final NetHttpTransport transport = new NetHttpTransport();
+
+            GoogleCredentials credentials = ServiceAccountCredentials.fromStream(
+                    new FileInputStream(Paths.get(keyPath).toFile()))
+                    .createScoped(Collections.singleton((DriveScopes.DRIVE_FILE)));
+
+            HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
+
+            drive = new Drive.Builder(
+                    transport,
+                    gsonFactory,
+                    requestInitializer)
+                    .setApplicationName("HogwartCVProcessor")
+                    .build();
+            System.out.println("Google Drive initialized");
+        }
+        catch(Exception e){
+            System.out.println("Critical ERROR: Couldn't connect to Google Drive!!!");
             System.out.println(e.getMessage());
         }
     }
@@ -171,8 +212,58 @@ public class CloudService {
         }
     }
 
+    // Method checks if given folder name is already in use on the drive
+    private String findFolderId(String dirName){
+        try{
+            String query = "name='" + dirName + "' and mimeType='application/vnd.google-apps.folder'"
+                    + " and '" + rootFolderId + "' in parents and trashed=false";
+
+            FileList result = drive.files().list()
+                    .setQ(query)
+                    .setSpaces("drive")
+                    .setFields("files(id)")
+                    .execute();
+            List<com.google.api.services.drive.model.File> files = result.getFiles();
+
+            if(files != null && !files.isEmpty())
+                return files.get(0).getId();
+        }
+        catch (IOException e){
+            System.out.println("Error: Couldn't access Google Drive!!!");
+        }
+        return null;
+    }
+
+    // Method acts as a simple folder name generator to avoid collisions on the drive
+    private String generateFolderName(String folderName){
+        String result = folderName;
+        int count = 0;
+
+        while(findFolderId(result) != null){
+            count++;
+            result = folderName + "-" +  count;
+        }
+
+        return result;
+    }
+
+    private String createFolder(String folderName) throws IOException {
+        String name = generateFolderName(folderName);
+        com.google.api.services.drive.model.File fileMetadata = new com.google.api.services.drive.model.File();
+
+        fileMetadata.setName(name);
+        fileMetadata.setMimeType("application/vnd.google-apps.folder");
+        fileMetadata.setParents(Collections.singletonList(rootFolderId));
+
+        com.google.api.services.drive.model.File folder = drive.files().create(fileMetadata)
+                .setFields("id")
+                .execute();
+
+        return folder.getId();
+    }
+
     //Method sends file under given path to google drive cloud storage
-    public void sendFileToCloud(String pathToFile){
+    public void sendFileToCloud(String folderName, String pathToFile){
 
     }
 }
