@@ -57,9 +57,10 @@ public class CloudService {
         // Checking and creating a folder for downloaded attachments
         try{
             Files.createDirectories(Paths.get(saveDir));
+            System.out.println("Log CloudService: Download folder exists.");
         }
         catch(Exception e){
-            System.out.println("Critical ERROR: Couldn't create download directory!!!");
+            System.out.println("Log CloudService: Critical ERROR: Couldn't create download directory!!!");
             System.out.println(e.getMessage());
         }
         // initializing Google Drive connection
@@ -79,10 +80,10 @@ public class CloudService {
                     requestInitializer)
                     .setApplicationName("HogwartCVProcessor")
                     .build();
-            System.out.println("Google Drive initialized");
+            System.out.println("Log CloudService: Google Drive initialized");
         }
         catch(Exception e){
-            System.out.println("Critical ERROR: Couldn't connect to Google Drive!!!");
+            System.out.println("Log CloudService: Critical ERROR: Couldn't connect to Google Drive!!!");
             System.out.println(e.getMessage());
         }
     }
@@ -96,6 +97,8 @@ public class CloudService {
         Session session = Session.getDefaultInstance(props, null);
         Store store = session.getStore("imaps");
         store.connect("imap.googlemail.com", accountMail, password);
+
+        System.out.println("Log CloudService: IMAP connection established");
         return store;
     }
 
@@ -113,6 +116,7 @@ public class CloudService {
                 return new PasswordAuthentication(accountMail, password);
             }
         });
+        System.out.println("Log CloudService: SMTP connection established");
         return session;
     }
 
@@ -147,6 +151,7 @@ public class CloudService {
                         Path savePath = Paths.get(saveDir + File.separator + fileName);
                         try(InputStream ins = part.getInputStream()) {
                             Files.copy(ins, savePath, StandardCopyOption.REPLACE_EXISTING);
+                            System.out.println("Log CloudService: Attachment saved to: " + savePath);
                             return savePath.toString();
                         }
                     }
@@ -155,7 +160,7 @@ public class CloudService {
 
         }
         catch (Exception e) {
-            System.out.println("Error: Failed to download attachment.");
+            System.out.println("Log CloudService: Error: Failed to download attachment!!!");
             System.out.println(e.getMessage());
         }
         return null;
@@ -177,18 +182,22 @@ public class CloudService {
                     InternetAddress sender = (InternetAddress) mail.getFrom()[0];
                     String senderMail = sender.getAddress();
                     String pathToCV = getAttachment(mail);
-                    if(pathToCV != null)
+                    if(pathToCV != null) {
+                        System.out.println("Log CloudService: Successfully processed an email");
                         applicants.add(new Applicant(senderMail, pathToCV));
+                    }
                 }
-                else
+                else {
                     mail.setFlag(Flags.Flag.DELETED, true);
+                    System.out.println("Log CloudService: Deleted unwanted mail");
+                }
             }
 
             inbox.close(true);
             return applicants;
         }
         catch (MessagingException e){
-            System.out.println("Error: Couldn't connect to mail server via IMAP.");
+            System.out.println("Log CloudService: Error: Couldn't connect to mail server via IMAP!!!");
             System.out.println(e.getMessage());
         }
         return null;
@@ -206,9 +215,10 @@ public class CloudService {
 
             message.setText(createResponseText(accepted));
             Transport.send(message);
+            System.out.println("Log CloudService: Successfully sent a response email");
         }
         catch (MessagingException e) {
-            System.out.println("Error: Couldn't connect to mail server via SMTP.");
+            System.out.println("Log CloudService: Error: Couldn't connect to mail server via SMTP!!!");
             System.out.println(e.getMessage());
         }
     }
@@ -226,12 +236,16 @@ public class CloudService {
                     .execute();
             List<com.google.api.services.drive.model.File> files = result.getFiles();
 
-            if(files != null && !files.isEmpty())
+            if(files != null && !files.isEmpty()) {
+                System.out.println("Log CloudService: Found a folder om Google Drive");
                 return files.get(0).getId();
+            }
         }
         catch (IOException e){
-            System.out.println("Error: Couldn't access Google Drive!!!");
+            System.out.println("Log CloudService: Error: Couldn't access Google Drive!!!");
+            System.out.println(e.getMessage());
         }
+        System.out.println("Log CloudService: Google Drive folder not found");
         return null;
     }
 
@@ -261,10 +275,11 @@ public class CloudService {
                     .setFields("id")
                     .execute();
 
+            System.out.println("Log CloudService: Google drive folder created");
             return folder.getId();
         }
         catch (IOException e){
-            System.out.println("Error: Couldn't create folder on Google Drive!!!");
+            System.out.println("Log CloudService: Error: Couldn't create folder on Google Drive!!!");
             System.out.println(e.getMessage());
         }
         return null;
@@ -287,6 +302,7 @@ public class CloudService {
         com.google.api.services.drive.model.File uploadedFile = drive.files().create(fileMetadata, content)
                 .setFields("id, webViewLink, parents")
                 .execute();
+        System.out.println("Log CloudService: Google Drive file uploaded");
     }
 
     //Method sends file under given path to google drive cloud storage
@@ -295,9 +311,10 @@ public class CloudService {
             String folderId = createFolder(folderName);
             if(folderId != null)
                 uploadFile(folderId, pathToFile);
+            System.out.println("Log CloudService: Successfully sent a file to cloud");
         }
         catch (IOException e){
-            System.out.println("Error: Couldn't create folder or file on the drive!!!");
+            System.out.println("Log CloudService: Error: Couldn't create folder or file on the drive!!!");
             System.out.println(e.getMessage());
         }
     }
