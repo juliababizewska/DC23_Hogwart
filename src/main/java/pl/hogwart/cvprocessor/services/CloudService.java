@@ -1,5 +1,6 @@
 package pl.hogwart.cvprocessor.services;
 
+import com.google.api.client.http.FileContent;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
@@ -248,22 +249,56 @@ public class CloudService {
     }
 
     private String createFolder(String folderName) throws IOException {
-        String name = generateFolderName(folderName);
+        try {
+            String name = generateFolderName(folderName);
+            com.google.api.services.drive.model.File fileMetadata = new com.google.api.services.drive.model.File();
+
+            fileMetadata.setName(name);
+            fileMetadata.setMimeType("application/vnd.google-apps.folder");
+            fileMetadata.setParents(Collections.singletonList(rootFolderId));
+
+            com.google.api.services.drive.model.File folder = drive.files().create(fileMetadata)
+                    .setFields("id")
+                    .execute();
+
+            return folder.getId();
+        }
+        catch (IOException e){
+            System.out.println("Error: Couldn't create folder on Google Drive!!!");
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    private void uploadFile(String folderId, String filePath) throws IOException {
+        Path path = Paths.get(filePath);
+        File file = path.toFile();
+
         com.google.api.services.drive.model.File fileMetadata = new com.google.api.services.drive.model.File();
+        fileMetadata.setParents(Collections.singletonList(folderId));
+        fileMetadata.setName(file.getName());
 
-        fileMetadata.setName(name);
-        fileMetadata.setMimeType("application/vnd.google-apps.folder");
-        fileMetadata.setParents(Collections.singletonList(rootFolderId));
+        String mimeType = Files.probeContentType(path);
+        if(mimeType == null)
+            mimeType = "application/octet-stream"; // fallback mimeType
 
-        com.google.api.services.drive.model.File folder = drive.files().create(fileMetadata)
-                .setFields("id")
+        FileContent content = new FileContent(mimeType, file);
+
+        com.google.api.services.drive.model.File uploadedFile = drive.files().create(fileMetadata, content)
+                .setFields("id, webViewLink, parents")
                 .execute();
-
-        return folder.getId();
     }
 
     //Method sends file under given path to google drive cloud storage
     public void sendFileToCloud(String folderName, String pathToFile){
-
+        try{
+            String folderId = createFolder(folderName);
+            if(folderId != null)
+                uploadFile(folderId, pathToFile);
+        }
+        catch (IOException e){
+            System.out.println("Error: Couldn't create folder or file on the drive!!!");
+            System.out.println(e.getMessage());
+        }
     }
 }
