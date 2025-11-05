@@ -39,21 +39,26 @@ public class CloudService {
     private static String saveDir = "src/main/resources/cvs";
 
     //Credentials to google account
-    @Value("${google.account.app-password}")
     private String password;
 
-    @Value("${google.account.mail}")
     private String accountMail;
 
-    @Value("${google.drive.key-path}")
     private String keyPath;
 
-    @Value("${google.drive.root.folder}")
     private String rootFolderId;
 
     private Drive drive;
 
-    public CloudService(){
+    public CloudService(
+            @Value("${google.account.app-password}")String password,
+            @Value("${google.account.mail}") String accountMail,
+            @Value("${google.drive.key-path}") String keyPath,
+            @Value("${google.drive.root.folder}") String rootFolderId) {
+        this.password = password;
+        this.accountMail = accountMail;
+        this.keyPath = keyPath;
+        this.rootFolderId = rootFolderId;
+
         // Checking and creating a folder for downloaded attachments
         try{
             Files.createDirectories(Paths.get(saveDir));
@@ -67,13 +72,11 @@ public class CloudService {
         try{
             final GsonFactory gsonFactory = GsonFactory.getDefaultInstance();
             final NetHttpTransport transport = new NetHttpTransport();
-
+            Paths.get(keyPath);
             GoogleCredentials credentials = ServiceAccountCredentials.fromStream(
                     new FileInputStream(Paths.get(keyPath).toFile()))
                     .createScoped(Collections.singleton((DriveScopes.DRIVE_FILE)));
-
             HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
-
             drive = new Drive.Builder(
                     transport,
                     gsonFactory,
@@ -145,7 +148,8 @@ public class CloudService {
                 for(int i = 0; i< multipart.getCount(); i++) {
                     Part part =  multipart.getBodyPart(i);
 
-                    if(Part.ATTACHMENT.equals(part.getDisposition())) {
+                    if(part.isMimeType("application/pdf") ||
+                            part.isMimeType("application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
                         String fileName = part.getFileName();
 
                         Path savePath = Paths.get(saveDir + File.separator + fileName);
@@ -179,12 +183,16 @@ public class CloudService {
                 mail.setFlag(Flags.Flag.SEEN, true);
 
                 if(Pattern.matches(subjectRegex, mail.getSubject())) {
+                    System.out.println("Log CloudService: Found wanted email");
                     InternetAddress sender = (InternetAddress) mail.getFrom()[0];
                     String senderMail = sender.getAddress();
                     String pathToCV = getAttachment(mail);
                     if(pathToCV != null) {
                         System.out.println("Log CloudService: Successfully processed an email");
                         applicants.add(new Applicant(senderMail, pathToCV));
+                    }
+                    else{
+                        System.out.println("Log CloudService: No attachment");
                     }
                 }
                 else {
