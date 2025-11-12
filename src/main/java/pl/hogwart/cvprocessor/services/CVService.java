@@ -33,10 +33,13 @@ public class CVService {
     public void processAllCVs() {
         // cloud service test block
         List<Applicant> testList = cloudService.getCVs();
-        boolean testFlag = false;
+        boolean acceptanceFlag = false;
+        boolean positionFlag = false;
         for (Applicant applicant : testList) {
-            cloudService.sendResponse(applicant.getEmail(), testFlag);
-            testFlag = !testFlag;
+            String tmp = applicant.getEmail();
+            cloudService.sendResponse(tmp, tmp, positionFlag, acceptanceFlag);
+            acceptanceFlag = !acceptanceFlag;
+            positionFlag = !positionFlag;
             String[] testArray = {applicant.getPathToCV()};
             cloudService.sendFileToCloud(applicant.getEmail(), testArray);
         }
