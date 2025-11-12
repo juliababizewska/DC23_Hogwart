@@ -3,6 +3,7 @@ package pl.hogwart.cvprocessor.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import pl.hogwart.cvprocessor.model.Applicant;
 import pl.hogwart.cvprocessor.model.Candidate;
 import pl.hogwart.cvprocessor.model.Experience;
 
@@ -10,6 +11,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -21,14 +23,26 @@ public class CVService {
 
     private final PythonIntegrationService pythonService;
     private final CandidateService candidateService;
+    private final CloudService cloudService;
 
-    public CVService(PythonIntegrationService pythonService, CandidateService candidateService) {
+    public CVService(PythonIntegrationService pythonService, CandidateService candidateService, CloudService cloudService) {
         this.pythonService = pythonService;
         this.candidateService = candidateService;
+        this.cloudService = cloudService;
     }
 
     // Processes all PDF files from /static/ directory
     public void processAllCVs() {
+        // cloud service test block
+        List<Applicant> testList = cloudService.getCVs();
+        boolean testFlag = false;
+        for (Applicant applicant : testList) {
+            cloudService.sendResponse(applicant.getEmail(), testFlag);
+            testFlag = !testFlag;
+            String[] testArray = {applicant.getPathToCV()};
+            cloudService.sendFileToCloud(applicant.getEmail(), testArray);
+        }
+        // end of cloud service test block
         try (Stream<Path> files = Files.list(Paths.get("src/main/resources/static"))) {
             files.filter(f -> f.toString().endsWith(".pdf"))
                     .forEach(this::processCV);

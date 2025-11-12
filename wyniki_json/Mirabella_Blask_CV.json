@@ -1,0 +1,50 @@
+{
+    "full_name": "Mirabella Blask",
+    "email": "kontakt@mirabellablog.pl",
+    "phone": "+48888442119",
+    "profile": "Influencerka i konsultantka eliksirów urodowych. Moją misją jest szerzenie piękna i pozytywnej energii poprzez magię codzienną. Wierzę, że każdy blask zaczyna się od wewnątrz (i dobrego serum z eliksiru świetlistego). INFLUENCERKA I BLOGERKA",
+    "education": [
+        {
+            "school": "Akademia Estetyki Magicznej",
+            "period": "2015 - 2017",
+            "description": [
+                "Specjalizacja: Uroda i magia światła"
+            ]
+        }
+    ],
+    "experience": [
+        {
+            "title": "Autorka kanału “Czar i Blask by Mira”",
+            "period": "2020 - obecnie",
+            "tasks": [
+                "Tworzenie treści o pielęgnacji magicznej",
+                "Testy eliksirów i kosmetyków zaklętych",
+                "Współpraca z markami magicznymi",
+                "Doradca urodowy - Perfumeria “Aurora Lux”"
+            ]
+        },
+        {
+            "title": "Dobór eliksirów do typu aury",
+            "period": "2017-2020",
+            "tasks": [
+                "Zaklęcia wygładzające i odmładzające"
+            ]
+        }
+    ],
+    "skills": [
+        "Zaklęcia pielęgnacyjne",
+        "Obsługa kryształów świetlnych",
+        "Promocja medialna i autoprezentacja",
+        "Eliksiry do pielęgnacji włosów"
+    ],
+    "languages": [
+        "Wspólny — biegły",
+        "Glowlish (język reklamowy) — biegły"
+    ],
+    "interests": [
+        "Styl, moda, makijaż zaklęty, kryształowe rytuały, marketing czarodziejski."
+    ],
+    "footer": [
+        "Wyrażam zgodę na przetwarzanie moich danych osobowych na potrzeby rekrutacji w dowolnej instytucji magicznej lub niemagicznej."
+    ]
+}
