@@ -29,38 +29,50 @@
     <thead>
     <tr>
         <th>#</th>
-        <th>Full Name</th>
-        <th>Position</th>
-        <th>Score</th>
-        <th>Requirements</th>
-        <th>File</th>
-        <th>Actions</th>
+        <th>Imię i Nazwisko</th>
+        <th>Stanowisko</th>
+        <th>Punktacja</th>
+        <th>Wymagania</th>
+        <th>Email</th>
+        <th>Plik CV</th>
+        <th>Szczegóły</th>
     </tr>
     </thead>
     <tbody>
     <th:block th:each="c, stat : ${candidates}">
         <tr>
             <td th:text="${stat.index + 1}"></td>
-            <td th:text="${c.fullname}"></td>
+            <td th:text="${c.full_name}"></td>
             <td th:text="${c.position}"></td>
             <td th:text="${c.score}"></td>
             <td th:text="${c.meetsRequirements}"></td>
+            <td th:text="${c.email}"></td>
             <td th:text="${c.sourceFile}"></td>
             <td>
-                <button type="button" th:onclick="'toggleDetails(' + ${stat.index} + ')'">Details</button>
+                <button type="button" th:onclick="'toggleDetails(' + ${stat.index} + ')'">Więcej</button>
             </td>
         </tr>
 
         <tr th:id="'details-' + ${stat.index}" class="details">
             <td colspan="7">
-                <strong>Email:</strong> <span th:text="${c.email}"></span><br/>
-                <strong>Experience:</strong>
-                <div th:each="e : ${c.experience}">
-                    <p><b th:text="${e.title}"></b> (<span th:text="${e.period}"></span>)</p>
+                <h3>Doświadczenie:</h3>
+                <div th:each="xp : ${c.experience}">
+                    <p><b th:text="${xp.title}"></b> (<span th:text="${xp.period}"></span>)</p>
                     <ul>
-                        <li th:each="t : ${e.tasks}" th:text="${t}"></li>
+                        <li th:each="t : ${xp.tasks}" th:text="${t}"></li>
                     </ul>
                 </div>
+                <h3>Wykształcenie:</h3>
+                <div th:each="edu : ${c.education}">
+                    <p><b th:text="${edu.school}"></b> (<span th:text="${edu.period}"></span>)</p>
+                    <ul>
+                        <li th:each="d : ${edu.description}" th:text="${d}"></li>
+                    </ul>
+                </div>
+                <h3>Umiejętności:</h3>
+                <ul>
+                    <li th:each="s : ${c.skills}" th:text="${s}"></li>
+                </ul>
             </td>
         </tr>
     </th:block>

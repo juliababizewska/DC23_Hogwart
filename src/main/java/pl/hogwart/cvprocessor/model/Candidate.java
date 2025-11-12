@@ -20,15 +20,17 @@ public class Candidate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String fullname;
+    private String full_name;
     private String email;
     private String phone;
-    private String profile;
-    private String footer;
     private String position;
     private boolean meetsRequirements;
     private double score;
     private String sourceFile;
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String profile;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "candidate_skills", joinColumns = @JoinColumn(name = "candidate_id"))
@@ -41,11 +43,6 @@ public class Candidate {
     private List<String> languages;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "candidate_education", joinColumns = @JoinColumn(name = "candidate_id"))
-    @Column(name = "education")
-    private List<String> education;
-
-    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "candidate_achievements", joinColumns = @JoinColumn(name = "candidate_id"))
     @Column(name = "achievements")
     private List<String> achievements;
@@ -55,9 +52,13 @@ public class Candidate {
     @Column(name = "interests")
     private List<String> interests;
 
-//    @ElementCollection
-//    @CollectionTable(name = "candidate_experience", joinColumns = @JoinColumn(name = "candidate_id"))
-//    private List<Experience> experience;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "candidate_footer", joinColumns = @JoinColumn(name = "candidate_id"))
+    @Column(name = "footer", columnDefinition = "TEXT")
+    private List<String> footer;
+
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Education> education;
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Experience> experience;
