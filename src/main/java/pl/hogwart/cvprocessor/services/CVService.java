@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.hogwart.cvprocessor.model.Candidate;
+import pl.hogwart.cvprocessor.model.Experience;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,9 +47,13 @@ public class CVService {
             ObjectMapper mapper = new ObjectMapper();
             Candidate candidate = mapper.readValue(json, Candidate.class);
 
+            for (Experience exp : candidate.getExperience()) {
+                exp.setCandidate(candidate);
+            }
             candidateService.saveCandidate(candidate);
-            System.out.println("Processed candidate: " + candidate.getName());
-            return "Processed candidate: " + candidate.getName();
+
+            System.out.println("Processed candidate: " + candidate.getFullname());
+            return "Processed candidate: " + candidate.getFullname();
         } catch (Exception e) {
             e.printStackTrace();
             return "Error processing CV " + filePath + ": " + e.getMessage();

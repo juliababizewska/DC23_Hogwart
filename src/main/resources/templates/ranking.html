@@ -3,27 +3,70 @@
 <head>
     <title>Candidate Ranking</title>
     <style>
-        body { font-family: Arial; margin: 20px; }
+        body { font-family: Arial, sans-serif; margin: 20px; }
         table { border-collapse: collapse; width: 100%; }
         th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
         th { background: #efefef; }
+        tr.details { background-color: #fafafa; display: none; }
+        button { cursor: pointer; padding: 4px 8px; }
+        ul { margin: 5px 0 10px 20px; }
     </style>
+    <script>
+        function toggleDetails(id) {
+            const detailsRow = document.getElementById('details-' + id);
+            if (detailsRow.style.display === 'table-row') {
+                detailsRow.style.display = 'none';
+            } else {
+                detailsRow.style.display = 'table-row';
+            }
+        }
+    </script>
 </head>
 <body>
+
 <h2>Candidate Ranking</h2>
 <table>
     <thead>
-    <tr><th>Name</th><th>Position</th><th>Score</th><th>Meets Requirements</th><th>CV FIle</th></tr>
+    <tr>
+        <th>#</th>
+        <th>Full Name</th>
+        <th>Position</th>
+        <th>Score</th>
+        <th>Requirements</th>
+        <th>File</th>
+        <th>Actions</th>
+    </tr>
     </thead>
     <tbody>
-    <tr th:each="c : ${candidates}">
-        <td th:text="${c.name}">Name</td>
-        <td th:text="${c.position}">Position</td>
-        <td th:text="${c.score}">0</td>
-        <td th:text="${c.meetsRequirements}">true</td>
-        <td th:text="${c.sourceFile}">sourceFile</td>
-    </tr>
+    <th:block th:each="c, stat : ${candidates}">
+        <tr>
+            <td th:text="${stat.index + 1}"></td>
+            <td th:text="${c.fullname}"></td>
+            <td th:text="${c.position}"></td>
+            <td th:text="${c.score}"></td>
+            <td th:text="${c.meetsRequirements}"></td>
+            <td th:text="${c.sourceFile}"></td>
+            <td>
+                <button type="button" th:onclick="'toggleDetails(' + ${stat.index} + ')'">Details</button>
+            </td>
+        </tr>
+
+        <tr th:id="'details-' + ${stat.index}" class="details">
+            <td colspan="7">
+                <strong>Email:</strong> <span th:text="${c.email}"></span><br/>
+                <strong>Experience:</strong>
+                <div th:each="e : ${c.experience}">
+                    <p><b th:text="${e.title}"></b> (<span th:text="${e.period}"></span>)</p>
+                    <ul>
+                        <li th:each="t : ${e.tasks}" th:text="${t}"></li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    </th:block>
     </tbody>
+
 </table>
+
 </body>
 </html>
