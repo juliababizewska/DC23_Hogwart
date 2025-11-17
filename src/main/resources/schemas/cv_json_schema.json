@@ -56,6 +56,14 @@
         ]
       }
     },
+    "achievements": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 500
+      }
+    },
+
     "experience": {
       "type": "array",
       "items": {
@@ -122,7 +130,6 @@
     "email",
     "phone",
     "education",
-    "experience",
     "skills",
     "footer"
   ]
