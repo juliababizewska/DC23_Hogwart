@@ -18,24 +18,18 @@
     ],
     "experience": [
         {
-            "title": "INSTRUKTOR TAŃCA",
+            "title": "INSTRUKTOR TAŃCA - AKADEMIA RUCHU MAGICZNEGO",
             "period": null,
             "tasks": [
-                "Akademia",
-                "Ruchu",
-                "Magicznego",
                 "Nauczanie zaklęć tanecznych i rytmicznych",
                 "Tworzenie choreografii magicznych",
                 "Organizacja pokazów energii ruchu"
             ]
         },
         {
-            "title": "ANIMATOR",
-            "period": "2016 - 2019",
+            "title": "ANIMATOR - FESTIWAL MAGICZNYCH DŹWIĘKÓW",
+            "period": null,
             "tasks": [
-                "Festiwal",
-                "Magicznych",
-                "Dźwięków",
                 "Prowadzenie warsztatów tanecznych",
                 "Pokazy synchronicznego czarowania"
             ]

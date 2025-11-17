@@ -1,0 +1,4 @@
+2025-11-17 17:27:30.716811+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Wartość za długa dla kolumny "SKILL CHARACTER VARYING(255)": "U&'Rozpoznawanie i klasyfikacja magicznych stworze\\0144 | Zak\\0142adanie zabezpi... (257)"
+Value too long for column "SKILL CHARACTER VARYING(255)": "U&'Rozpoznawanie i klasyfikacja magicznych stworze\\0144 | Zak\\0142adanie zabezpi... (257)"; SQL statement:
+insert into candidate_skills (candidate_id,skill) values (?,?) [22001-232]

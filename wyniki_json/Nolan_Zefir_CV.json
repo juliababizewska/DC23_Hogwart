@@ -2,82 +2,59 @@
     "full_name": "Nolan Zefir",
     "email": "nolan.zefir@zielonyszlak.org",
     "phone": "+48700432118",
-    "profile": "Stara Chata, Kraina Wschodnich Borów 27.02.2001",
     "education": [
         {
-            "school": "w Zielonej Górze",
-            "period": null,
+            "school": "Szkoła Magii Użytkowej w Zielonej Górze",
+            "period": "Wrzesień 2017 - Czerwiec 2020",
             "description": [
-                "Kierunek: Magia natury i podstawy ochrony magicznej"
-            ]
-        },
-        {
-            "school": "Praca końcowa; Zachowanie równowagi energetycznej w",
-            "period": "2017-2020",
-            "description": [
-                "ekosystemach magicznych"
+                "Kierunek: Magia natury i podstawy ochrony magicznej",
+                "Praca końcowa: Zachowanie równowagi energetycznej w ekosystemach magicznych"
             ]
         }
     ],
     "experience": [
         {
-            "title": "Sklep “Korzeń i Mgła”",
-            "period": null,
-            "tasks": [
-                "Pomocnik zielarza"
-            ]
-        },
-        {
-            "title": "Zbieranie składników do mikstur i eliksirów ochronnych",
+            "title": "Pomocnik Zielarza, Sklep “Korzeń i Mgła”",
             "period": "2023-2025",
             "tasks": [
-                "Uprawa i pielęgnacja magicznych roślin (m.in. Żmijolist,"
-            ]
-        },
-        {
-            "title": "Wilczozioło, Nocne Serce",
-            "period": null,
-            "tasks": [
+                "Zbieranie składników do mikstur i eliksirów ochronnych",
+                "Uprawa i pielęgnacja magicznych roślin (m.in. Żmijolist, Wilczozioło, Nocne Serce)",
                 "Praca z klientami i identyfikacja ingrediencji terenowych",
-                "Szumiące Bory",
-                "Praktykant w Rezerwacie Magicznych Stworzeń"
+                "Praktykant w Rezerwacie Magicznych Stworzeń, Szumiące Bory"
             ]
         },
         {
-            "title": "Karmienie, pielęgnacja i oswajanie magicznych zwierząt niskiego",
+            "title": "Karmienie, pielęgnacja i oswajanie magicznych zwierząt niskiego ryzyka",
             "period": "2020-2023",
             "tasks": [
-                "ryzyka",
                 "Pomoc w budowie wybiegów i barier ochronnych",
-                "Ewakuacja miniaturowych smoków podczas burzy energetycznej",
-                "Wolontariusz",
-                "Fundacja “Las Żyje”"
+                "Ewakuacja miniaturowych smoków podczas burzy energetycznej"
             ]
         },
         {
-            "title": "Odbudowa ścieżek leśnych i naprawa tablic ostrzegawczych",
+            "title": "Wolontariusz, Fundacja “Las Żyje”",
             "period": "2018-2020",
             "tasks": [
-                "Współpraca przy badaniach terenowych nad migracją świetlików",
-                "czarnomagicznych",
+                "Odbudowa ścieżek leśnych i naprawa tablic ostrzegawczych",
+                "Współpraca przy badaniach terenowych nad migracją świetlików czarnomagicznych",
                 "Organizacja warsztatów ekologiczno-magicznych dla dzieci"
             ]
         }
     ],
     "skills": [
-        "Zaklęcia terenowe niskiego poziomu (utrzymanie, naprawa, oczyszczanie)",
-        "Identyfikacja magicznych gatunków roślin i stworzeń",
-        "Podstawy zielarstwa i miksturoznawstwa",
-        "Praca w trudnych warunkach pogodowych",
-        "Umiejętność improwizacji i kreatywnego rozwiązywania problemów"
+        "Zielarstwo",
+        "Eliksiry Ochronne",
+        "Uprawa magicznych roślin",
+        "Pielęgnacja magicznych stworzeń",
+        "Opieka i oswajanie magicznych zwierząt",
+        "Opieka nad smokami",
+        "Identyfikacja roślin i stworzeń",
+        "Miksturoznawstwo",
+        "Znajomość anomalii pogodowych"
     ],
     "achievements": [
         "Opracowanie eliksiru odstraszającego komary magiczne | Finalista konkursu młodych",
         "przyrodników - Zieleń w Magii"
-    ],
-    "languages": [
-        "Wspólny — biegły",
-        "Runiczny — podstawowy"
     ],
     "footer": [
         "Wyrażam zgodę na przetwarzanie moich danych osobowych na potrzeby rekrutacji w dowolnej instytucji magicznej lub niemagicznej."
