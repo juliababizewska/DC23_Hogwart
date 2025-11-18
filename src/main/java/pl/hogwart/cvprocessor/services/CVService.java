@@ -6,14 +6,11 @@ import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.stereotype.Service;
 import pl.hogwart.cvprocessor.model.Applicant;
 import pl.hogwart.cvprocessor.model.Candidate;
 
-import java.io.File;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -76,7 +73,7 @@ public class CVService {
             JsonNode jsonNode = mapper.readTree(json);
 
             // validation
-            try (InputStream schemaStream = getClass().getResourceAsStream("/schemas/cv_json_schema.json")) {
+            try (InputStream schemaStream = getClass().getResourceAsStream("/static/schemas/cv_json_schema.json")) {
                 JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V202012);
                 JsonSchema schema = factory.getSchema(schemaStream);
 

@@ -1,84 +1,167 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Candidate Ranking</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background: #efefef; }
-        tr.details { background-color: #fafafa; display: none; }
-        button { cursor: pointer; padding: 4px 8px; }
-        ul { margin: 5px 0 10px 20px; }
-    </style>
+    <meta charset="utf-8"/>
+    <title>Ranking Kandydatów</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+
     <script>
         function toggleDetails(id) {
-            const detailsRow = document.getElementById('details-' + id);
-            if (detailsRow.style.display === 'table-row') {
-                detailsRow.style.display = 'none';
-            } else {
-                detailsRow.style.display = 'table-row';
-            }
+            const row = document.getElementById('details-' + id);
+            row.style.display = (row.style.display === 'table-row') ? 'none' : 'table-row';
+        }
+
+        function toggleIcon(id) {
+            const icon = document.getElementById('icon-' + id);
+            icon.classList.toggle('open');
         }
     </script>
+    <script>
+        function notifyCandidates() {
+            fetch('/notify-candidates', { method: 'POST' })
+                .then(resp => resp.text())
+                .then(msg => showToast(msg))
+                .catch(() => showToast("Błąd wysyłania e-maili"));
+        }
+
+        function showToast(message) {
+            const toast = document.createElement("div");
+            toast.id = "toast";
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add("show"), 10);
+            setTimeout(() => toast.classList.remove("show"), 2500);
+            setTimeout(() => toast.remove(), 3500);
+        }
+    </script>
+
+
 </head>
 <body>
 
-<h2>Candidate Ranking</h2>
-<table>
-    <thead>
-    <tr>
-        <th>#</th>
-        <th>Imię i Nazwisko</th>
-        <th>Stanowisko</th>
-        <th>Punktacja</th>
-        <th>Wymagania</th>
-        <th>Email</th>
-        <th>Plik CV</th>
-        <th>Szczegóły</th>
-    </tr>
-    </thead>
-    <tbody>
-    <th:block th:each="c, stat : ${candidates}">
-        <tr>
-            <td th:text="${stat.index + 1}"></td>
-            <td th:text="${c.full_name}"></td>
-            <td th:text="${c.position}"></td>
-            <td th:text="${c.score}"></td>
-            <td th:text="${c.meetsRequirements}"></td>
-            <td th:text="${c.email}"></td>
-            <td th:text="${c.sourceFile}"></td>
-            <td>
-                <button type="button" th:onclick="'toggleDetails(' + ${stat.index} + ')'">Więcej</button>
-            </td>
-        </tr>
+<div class="container">
+    <div id="toast" th:if="${msg}" th:text="${msg}"></div>
 
-        <tr th:id="'details-' + ${stat.index}" class="details">
-            <td colspan="7">
-                <h3>Doświadczenie:</h3>
-                <div th:each="xp : ${c.experience}">
-                    <p><b th:text="${xp.title}"></b> (<span th:text="${xp.period}"></span>)</p>
-                    <ul>
-                        <li th:each="t : ${xp.tasks}" th:text="${t}"></li>
-                    </ul>
-                </div>
-                <h3>Wykształcenie:</h3>
-                <div th:each="edu : ${c.education}">
-                    <p><b th:text="${edu.school}"></b> (<span th:text="${edu.period}"></span>)</p>
-                    <ul>
-                        <li th:each="d : ${edu.description}" th:text="${d}"></li>
-                    </ul>
-                </div>
-                <h3>Umiejętności:</h3>
-                <ul>
-                    <li th:each="s : ${c.skills}" th:text="${s}"></li>
-                </ul>
-            </td>
-        </tr>
-    </th:block>
-    </tbody>
+    <!-- HEADER -->
+    <div class="ranking-header">
+        <a href="/" class="btn-back">
+            <svg viewBox="0 0 24 24" class="icon-back">
+                <path d="M15 6l-6 6 6 6" stroke-width="2" stroke="currentColor"
+                      fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Wstecz
+        </a>
 
-</table>
+        <h1>Ranking Kandydatów</h1>
+
+        <button type="button" class="btn btn-primary notify-btn" onclick="notifyCandidates()">
+            Wyślij e-maile z wynikami rekrutacji
+        </button>
+    </div>
+
+
+    <div class="card">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Imię i nazwisko</th>
+                    <th>Stanowisko</th>
+                    <th>Pkt.</th>
+                    <th class="qualified-col">Kwalifikacja</th>
+                    <th>Telefon</th>
+                    <th>Email</th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <th:block th:each="c, stat : ${candidates}">
+                    <!-- MAIN ROW -->
+                    <tr>
+                        <td th:text="${stat.index + 1}"></td>
+                        <td th:text="${c.full_name}"></td>
+                        <td th:text="${c.position}"></td>
+                        <td th:text="${c.score}"></td>
+                        <td class="qualified-col">
+                            <svg th:if="${c.meetsRequirements}"
+                                 class="icon-ok"
+                                 fill="none" stroke-width="2"
+                                 viewBox="0 0 24 24">
+                                <path d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <svg th:if="${!c.meetsRequirements}"
+                                 class="icon-no"
+                                 fill="none" stroke-width="2"
+                                 viewBox="0 0 24 24">
+                                <path d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </td>
+                        <td th:text="${c.phone}"></td>
+                        <td th:text="${c.email}"></td>
+                        <td>
+                            <button class="btn-icon"
+                                    th:onclick="'toggleDetails(' + ${stat.index} + '); toggleIcon(' + ${stat.index} + ');'">
+                                <span>Szczegóły</span>
+                                <svg th:id="'icon-' + ${stat.index}"
+                                     class="icon-arrow" viewBox="0 0 20 20">
+                                    <path d="M5 7l5 5 5-5" stroke-width="2" stroke-linecap="round" fill="none"/>
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- DETAILS ROW -->
+                    <tr th:id="'details-' + ${stat.index}"
+                        class="details-row"
+                        style="display:none">
+
+                        <td colspan="8">
+                            <div class="details-box">
+
+                                <h3 th:text="${c.full_name}"></h3>
+                                <p class="small" th:text="'Kandydat na stanowisko: ' + ${c.position}"></p>
+
+                                <h4>Doświadczenie</h4>
+                                <div th:each="xp : ${c.experience}">
+                                    <p>
+                                        <b th:text="${xp.title}"></b>
+                                        <span class="small" th:text="' (' + ${xp.period} + ')'"></span>
+                                    </p>
+                                    <ul>
+                                        <li th:each="t : ${xp.tasks}" th:text="${t}"></li>
+                                    </ul>
+                                </div>
+
+                                <h4>Wykształcenie</h4>
+                                <div th:each="edu : ${c.education}">
+                                    <p>
+                                        <b th:text="${edu.school}"></b>
+                                        <span class="small" th:text="' (' + ${edu.period} + ')'"></span>
+                                    </p>
+                                    <ul>
+                                        <li th:each="d : ${edu.description}" th:text="${d}"></li>
+                                    </ul>
+                                </div>
+
+                                <h4>Umiejętności</h4>
+                                <ul>
+                                    <li th:each="s : ${c.skills}" th:text="${s}"></li>
+                                </ul>
+
+                            </div>
+                        </td>
+                    </tr>
+
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
 
 </body>
 </html>

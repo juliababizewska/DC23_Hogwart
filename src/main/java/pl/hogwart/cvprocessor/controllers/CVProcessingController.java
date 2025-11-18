@@ -30,14 +30,21 @@ public class CVProcessingController {
     @ResponseBody
     public String clearTable() {
         candidateService.clear();
-        return "cleared table";
+        return "Usunięto dane z bazy kandydatów!";
     }
 
     // running cv processing test
     @PostMapping("/process-test")
     @ResponseBody
-    public String processAllCVs() {
+    public String processTestCVs() {
         cvService.processAllCVs();
         return "Processed all CVs from /static/";
+    }
+
+    @PostMapping("/process")
+    @ResponseBody
+    public String processAllCVs() {
+        cvService.processAllCVs();
+        return "Processed all received CVs [now static, downloading module is not connected yet]";
     }
 }
