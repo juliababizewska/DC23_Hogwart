@@ -4,6 +4,7 @@
     --muted:#6b7280;
     --accent:#2563eb;
     --success: rgb(83, 189, 122);
+    --error:#ef4444;
     --danger:#ef4444;
     --border:#e6e9ef;
     --radius:12px;
@@ -252,30 +253,27 @@ tbody tr:hover td{
 }
 
 
-/* komunikat z redirecta */
-#toast {
+/* komunikat z działania przycików */
+.toast {
     position: fixed;
     top: 20px;
     right: 20px;
-    background: var(--success);
+    padding: 12px 20px;
+    background: var(--muted);
     color: white;
-    padding: 14px 22px;
-    border-radius: var(--radius);
-    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
-    font-weight: 600;
+    border-radius: 6px;
     opacity: 0;
-    transform: translateY(-20px);
-    pointer-events: none;
+    transition: opacity .3s ease, transform .3s ease;
+    transform: translateY(-10px);
     z-index: 9999;
-    transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
-#toast.show {
+.toast.show {
     opacity: 1;
     transform: translateY(0);
 }
 
-#toast.hide {
+.toast.hide {
     opacity: 0;
     transform: translateY(-20px);
 }

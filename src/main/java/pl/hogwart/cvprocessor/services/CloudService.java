@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
 public class CloudService {
     private final String subjectRegex = "Hogwart Rekrutacja.*";
     private final String saveDir = "src/main/resources/cvs";
+    // TODO: the python extractor expects the cv files in data/cv_files folder
 
     //Credentials to google account
     private final String password;

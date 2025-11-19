@@ -724,8 +724,8 @@ def extract_details(segmented_cv):
 
 if __name__ == "__main__":
     
-    CV_DIRECTORY = "cv" 
-    RESULTS_DIRECTORY = "wyniki_json"
+    CV_DIRECTORY = "./data/cv_files"
+    RESULTS_DIRECTORY = "./data/results_json"
     
     os.makedirs(RESULTS_DIRECTORY, exist_ok=True)
     
