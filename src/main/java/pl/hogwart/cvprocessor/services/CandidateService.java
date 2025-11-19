@@ -21,26 +21,35 @@ public class CandidateService {
 
     public Candidate calculateScore(Candidate candidate) {
         // assigning random score
-        candidate.setMeetsRequirements(true);
-        if (candidate.isMeetsRequirements()) {
-            double teacherScore = SkillsValidatorService.calculateScoreForPosition(candidate,  Position.TEACHER);
-            double keeperScore = SkillsValidatorService.calculateScoreForPosition(candidate,  Position.KEEPER);
+        double teacherScore = SkillsValidatorService.calculateScoreForPosition(candidate,  Position.TEACHER);
+        double keeperScore = SkillsValidatorService.calculateScoreForPosition(candidate,  Position.KEEPER);
 
-            if(teacherScore == 0.0 && keeperScore == 0.0){
-                candidate.setPosition("Brak dopasowania");
-                candidate.setScore(0.0);
-                candidate.setMeetsRequirements(false); // TODO: CHANGE TO SET TRUE ONLY TO THOSE WHO PASSED REQUIREMENTS
-            }
-            else if (teacherScore > keeperScore) {
-                candidate.setPosition("Nauczyciel OPCzM");
-                candidate.setScore(teacherScore);
-            }
-            else {
-                candidate.setPosition("Asystent gajowego");
-                candidate.setScore(keeperScore);
-            }
+        if(teacherScore == 0.0 && keeperScore == 0.0){
+            candidate.setPosition("Brak dopasowania");
+            candidate.setScore(0.0);
+            candidate.setMeetsRequirements(false); // TODO: CHANGE TO SET TRUE ONLY TO THOSE WHO PASSED REQUIREMENTS
+        }
+        else if (teacherScore > keeperScore) {
+            candidate.setPosition("Nauczyciel OPCzM");
+            candidate.setScore(teacherScore);
+        }
+        else {
+            candidate.setPosition("Asystent gajowego");
+            candidate.setScore(keeperScore);
         }
         return candidate;
+    }
+
+
+    public void markMeetsRequirements() {
+        List<Candidate> teachers = findAllMeetsRequirementsCandidates(true);
+        List<Candidate> keepers = findAllMeetsRequirementsCandidates(false);
+        for  (Candidate candidate : teachers) {
+            candidate.setMeetsRequirements(true);
+        }
+        for  (Candidate candidate : keepers) {
+            candidate.setMeetsRequirements(true);
+        }
     }
 
     public List<Candidate> getAllCandidates() {
@@ -65,5 +74,19 @@ public class CandidateService {
     }
 
     public void clear() { repository.deleteAll(); }
+
+    public List<Candidate> findAllMeetsRequirementsCandidates(boolean isTeacher) {
+
+        String requiredPosition = isTeacher
+                ? "Nauczyciel OPCzM"
+                : "Asystent gajowego";
+
+        return repository.findAll().stream()
+                .filter(c -> requiredPosition.equals(c.getPosition())) // pozycja
+                .filter(c -> c.getScore() >= 20)                        // score >= 20
+                .sorted(Comparator.comparing(Candidate::getScore).reversed())
+                .limit(3)
+                .toList();
+    }
 }
 

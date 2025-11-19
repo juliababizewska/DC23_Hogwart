@@ -28,6 +28,7 @@ public class ClientAPIController {
     @GetMapping("/ranking") // GET http://localhost:8080/ranking
     public String ranking(Model model) {
         List<Candidate> candidates = candidateService.getAllCandidatesSorted();
+        candidateService.markMeetsRequirements();
         model.addAttribute("candidates", candidates);
         return "ranking";
     }

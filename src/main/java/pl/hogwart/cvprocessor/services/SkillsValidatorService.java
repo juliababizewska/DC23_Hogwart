@@ -100,30 +100,6 @@ public class SkillsValidatorService {
         }
     }
 
-    // Levenshtein i podobieństwo
-    private static int levenshtein(String s1, String s2) {
-        int[] prev = new int[s2.length() + 1];
-        for (int j = 0; j <= s2.length(); j++) prev[j] = j;
-        for (int i = 1; i <= s1.length(); i++) {
-            int[] cur = new int[s2.length() + 1];
-            cur[0] = i;
-            for (int j = 1; j <= s2.length(); j++) {
-                int cost = s1.charAt(i - 1) == s2.charAt(j - 1) ? 0 : 1;
-                cur[j] = Math.min(Math.min(cur[j - 1] + 1, prev[j] + 1), prev[j - 1] + cost);
-            }
-            prev = cur;
-        }
-        return prev[s2.length()];
-    }
-
-    private static double similarity(String a, String b) {
-        if (a.isEmpty() && b.isEmpty()) return 1.0;
-        if (a.isEmpty() || b.isEmpty()) return 0.0;
-        int dist = levenshtein(a, b);
-        int max = Math.max(a.length(), b.length());
-        return 1.0 - (double) dist / (double) max;
-    }
-
     public static double calculateScoreForPosition(Candidate candidate, Position position){
         List<String> requirements = new ArrayList<String>();
         if(position == Position.TEACHER) requirements =  Arrays.asList(teacherRequirements);
@@ -147,7 +123,6 @@ public class SkillsValidatorService {
         for(String skill : candidateSkills){
             for(String requirement : requiredSkills){
                 if(wordContains(skill, requirement) || wordContains(requirement, skill)){
-                    System.out.println("Req: " + requirement + "; Skill: " + skill);
                     matches++;
                 }
             }

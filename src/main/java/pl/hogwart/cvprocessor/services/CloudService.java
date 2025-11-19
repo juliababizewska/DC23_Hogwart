@@ -140,7 +140,7 @@ public class CloudService {
         String text = "Szanowni Państwo, \n\n";
 
         text =  text + "Ze względu na brak zgody dotyczącej przetwarzania danych osobistych nie byliśmy w stanie" +
-                "przetworzyć Państwa CV. Prosimy o przesłanie poprawnej wersji dokumentu." +
+                " przetworzyć Państwa CV. Prosimy o przesłanie poprawnej wersji dokumentu." +
                 "\n\n Pozdrawiam, \n Automatyczny system rozpatrzeń CV HogwartCVProcessor";
 
         return text;
