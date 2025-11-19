@@ -1,16 +1,25 @@
 package pl.hogwart.cvprocessor.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.networknt.schema.JsonSchema;
+import com.networknt.schema.JsonSchemaFactory;
+import com.networknt.schema.SpecVersion;
+import com.networknt.schema.ValidationMessage;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import pl.hogwart.cvprocessor.model.Applicant;
 import pl.hogwart.cvprocessor.model.Candidate;
-import java.io.File;
+import pl.hogwart.cvprocessor.model.PythonResult;
+
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Class responsible for CV processing
@@ -30,7 +39,7 @@ public class CVService {
     }
 
     // Processes all PDF files from /static/ directory
-    public void processAllCVs() {
+    public PythonResult processAllCVs() {
         // cloud service test block
         List<Applicant> testList = cloudService.getCVs();
         boolean acceptanceFlag = false;
@@ -44,30 +53,86 @@ public class CVService {
             cloudService.sendFileToCloud(applicant.getEmail(), testArray);
         }
         // end of cloud service test block
-        try (Stream<Path> files = Files.list(Paths.get("src/main/resources/static"))) {
-            files.filter(f -> f.toString().endsWith(".pdf"))
-                    .forEach(this::processCV);
+
+        // run python script to process the CV documents and extract data to JSON files
+        // the script searches for documents in 'data/cv_files' directory and  outputs them to 'data/results_json'
+        PythonResult result = pythonService.runPythonScript();
+        if (!result.isSuccess())
+            return result; // python script failed, abort processing
+
+        // for each process data from each extracted JSON
+        List<String> cvProcessingLogs = new ArrayList<>();
+        try {
+            Path folder = Paths.get("data/results_json");
+            if (Files.exists(folder)) {
+
+                Files.list(folder)
+                    .filter(f -> f.toString().endsWith(".json"))
+                    .forEach(path -> {
+                        String feedback = processCV(path.getFileName().toString());
+                        cvProcessingLogs.add(feedback);
+                    });
+            }
+
         } catch (Exception e) {
-            System.err.println("Error scanning directory: " + e.getMessage());
+            cvProcessingLogs.add("Error scanning directory: " + e.getMessage());
         }
+
+        result.addLogs(cvProcessingLogs);
+        result.setMessage("Przetwarzanie CV zakończone");
+        System.out.println(result.toString());
+        return result;
     }
 
-    public String processCV(Path filePath) {
+    public String processCV(String filename) {
         try {
-            System.out.println("Processing file: " + filePath.getFileName());
-            // run python script to process the file and get back candidate's data in JSON
-            String json = pythonService.runPythonScript(filePath.toAbsolutePath().toString());
+            // checking if file wasn't already processed
+            Optional<Candidate> existing = candidateService.findBySourceFile(filename);
+            if (existing.isPresent()) {
+                System.out.println("Skipping " + filename + " — was already processed.");
+                return "Skipping " + filename + " — file was already processed.";
+            }
 
-            // map JSON to the Candidate object - TODO: binding based on schema
+            System.out.println("Processing file: " + filename);
+
+            // reading the json file extracted from received CV
+            String json = new String(Files.readAllBytes(Paths.get("data/results_json/" + filename)));
+
             ObjectMapper mapper = new ObjectMapper();
+            JsonNode jsonNode = mapper.readTree(json);
+
+            // validation
+            try (InputStream schemaStream = getClass().getResourceAsStream("/static/schemas/cv_json_schema.json")) {
+                JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V202012);
+                JsonSchema schema = factory.getSchema(schemaStream);
+
+                Set<ValidationMessage> errors = schema.validate(jsonNode);
+                if (!errors.isEmpty()) {
+                    // TODO: send rejection e-mail?
+                    String message = errors.stream()
+                            .map(ValidationMessage::getMessage)
+                            .collect(Collectors.joining("; "));
+                    throw new RuntimeException("Invalid CV JSON (" + filename + "): " + message);
+                }
+            }
+
+            // mapping JSON to Candidate
             Candidate candidate = mapper.readValue(json, Candidate.class);
+            if (candidate.getExperience() != null) {
+                candidate.getExperience().forEach(e -> e.setCandidate(candidate));
+            }
+            if (candidate.getEducation() != null) {
+                candidate.getEducation().forEach(edu -> edu.setCandidate(candidate));
+            }
+            candidate.setSourceFile(filename);
 
             candidateService.saveCandidate(candidate);
-            System.out.println("Processed candidate: " + candidate.getName());
-            return "Processed candidate: " + candidate.getName();
+            System.out.println("Processed candidate: " + candidate.getFull_name());
+            return "Processed candidate: " + candidate.getFull_name();
+
         } catch (Exception e) {
             e.printStackTrace();
-            return "Error processing CV " + filePath + ": " + e.getMessage();
+            return "Error processing CV " + filename + ": " + e.getMessage();
         }
     }
 }

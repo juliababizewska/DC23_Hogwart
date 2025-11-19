@@ -32,8 +32,8 @@ import java.util.regex.Pattern;
 @Service
 public class CloudService {
     private final String subjectRegex = "Hogwart Rekrutacja.*";
-    private final String saveDir = "src/main/resources/cvs";
     private final String mailTemplatePath = "src/main/resources/mailTemplates";
+    private final String saveDir = "data/cv_files";
 
     //Credentials to google account
     private final String password;

@@ -33,6 +33,7 @@ dependencies {
     implementation 'com.google.api-client:google-api-client:2.0.0'
     implementation 'com.google.auth:google-auth-library-oauth2-http:1.21.0'
     implementation 'com.google.apis:google-api-services-drive:v3-rev20220815-2.0.0'
+    implementation 'com.networknt:json-schema-validator:1.0.85'
     runtimeOnly 'com.h2database:h2'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

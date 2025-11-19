@@ -1,19 +1,70 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Client Api</title>
+    <meta charset="utf-8"/>
+    <title>Hogwart - rekrutacja</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+
+    <!-- toast notification -->
+    <script>
+        function processCVs() {
+            fetch('/process', { method: 'POST' })
+                .then(resp => resp.json())
+                .then(data => {
+                    showToast(data.message, data.success ? "success" : "error");
+                })
+                .catch(() => showToast("Błąd przetwarzania plików CV!", "error"));
+        }
+
+        function clearDatabase() {
+            fetch('/candidates/clear', { method: 'POST' })
+                .then(resp => resp.text())
+                .then(msg => showToast(msg, "success"))
+                .catch(() => showToast("Błąd usuwania z bazy!", "error"));
+        }
+
+        function showToast(message, status) {
+            const toast = document.createElement("div");
+            toast.classList.add("toast");
+            toast.textContent = message;
+
+            toast.style.background = "var(--" + status + ")";
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add("show"), 10);
+            setTimeout(() => toast.classList.remove("show"), 2500);
+            setTimeout(() => toast.remove(), 5000);
+        }
+    </script>
+
 </head>
 <body>
-<h2>Client site under construction</h2>
-<p>Visit ranking <a href="http://localhost:8080/ranking">http://localhost:8080/ranking</a></p>
-<p>Open database console <a href="http://localhost:8080/h2-console">http://localhost:8080/h2-console</a></p>
-<br/>
-<form th:action="@{/process-test}" method="post">
-    <button type="submit">Process test CVs</button>
-</form>
-<br/>
-<form th:action="@{/candidates/clear}" method="post">
-    <button type="submit">Clear ranking database</button>
-</form>
+<div id="toast" th:if="${msg}" th:text="${msg}"></div>
+
+<div class="container">
+    <div class="card" style="text-align:center; padding:40px;">
+        <h1>Panel Serwisu Rekrutacyjnego</h1>
+        <p class="subtitle">Hogwart - Szkoła Magii i Czarodziejstwa</p>
+
+        <div class="index-links">
+            <a href="/ranking" class="btn btn-ghost">
+                Ranking kandydatów
+            </a>
+            <a href="/h2-console" class="btn btn-ghost">
+                Konsola bazy danych kandydatów
+            </a>
+        </div>
+        <div class="index-buttons-group">
+            <button type="submit" class="btn btn-primary" onclick="processCVs()">
+                Przetwórz pliki CV
+            </button>
+
+            <button type="submit" class="btn btn-danger" onclick="clearDatabase()">
+                Wyczyść bazę kandydatów
+            </button>
+        </div>
+    </div>
+</div>
 </body>
 </html>

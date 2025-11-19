@@ -1,6 +1,8 @@
 package pl.hogwart.cvprocessor.services;
 
 import org.springframework.stereotype.Service;
+import pl.hogwart.cvprocessor.model.PythonResult;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
@@ -10,25 +12,44 @@ import java.io.InputStreamReader;
 @Service
 public class PythonIntegrationService {
 
-    public String runPythonScript(String filePath) {
+    public PythonResult runPythonScript() {
+        PythonResult result = new PythonResult();
+
         try {
-            ProcessBuilder pb = new ProcessBuilder("python", "./python-extractor/extract_cv.py", filePath);
-            pb.redirectErrorStream(true);
+            ProcessBuilder pb = new ProcessBuilder("python", "./python-extractor/cv_parser.py");
             Process process = pb.start();
 
-            // the example script extract_cv.py just sends JSON data to stdout for now
+            BufferedReader stdOut = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader stdErr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
-            // getting result from stout
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            StringBuilder output = new StringBuilder();
+            StringBuilder out = new StringBuilder();
+            StringBuilder err = new StringBuilder();
+
             String line;
-            while ((line = reader.readLine()) != null)
-                output.append(line);
+            while ((line = stdOut.readLine()) != null)
+                out.append(line).append("\n");
 
-            process.waitFor();
-            return output.toString(); // return obtained JSON data
+            while ((line = stdErr.readLine()) != null)
+                err.append(line).append("\n");
+
+            int exitCode = process.waitFor();
+
+            result.setSuccess(exitCode == 0);
+
+            if (exitCode == 0) {
+                result.setMessage("Python script finished successfully.");
+                result.addLog(out.toString());
+            } else {
+                result.setMessage("Python script failed.");
+                result.addLog(err.toString());
+                System.err.println(err);
+            }
+            return result;
         } catch (Exception e) {
-            return "Error running Python script: " + e.getMessage();
+            result.setSuccess(false);
+            result.setMessage("Error running script: " + e.getMessage());
+            e.printStackTrace();
+            return result;
         }
     }
 }

@@ -1,14 +1,13 @@
 package pl.hogwart.cvprocessor.services;
 
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.hogwart.cvprocessor.model.Candidate;
+import pl.hogwart.cvprocessor.model.Position;
 import pl.hogwart.cvprocessor.repositories.CandidateRepository;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
+import java.util.Optional;
 
 /**
  * Class responsible for managing candidate database
@@ -21,14 +20,26 @@ public class CandidateService {
         this.repository = repository;
     }
 
-    // TODO: prepare and call functions to check requirements and assign scores to candidates
     public Candidate calculateScore(Candidate candidate) {
         // assigning random score
         candidate.setMeetsRequirements(true);
         if (candidate.isMeetsRequirements()) {
-            Double score = new Random().nextDouble(100);
-            score = Math.floor(score * 100) / 100;
-            candidate.setScore(score);
+            double teacherScore = SkillsValidatorService.calculateScoreForPosition(candidate,  Position.TEACHER);
+            double keeperScore = SkillsValidatorService.calculateScoreForPosition(candidate,  Position.KEEPER);
+
+            if(teacherScore == 0.0 && keeperScore == 0.0){
+                candidate.setPosition("Brak dopasowania");
+                candidate.setScore(0.0);
+                candidate.setMeetsRequirements(false); // TODO: CHANGE TO SET TRUE ONLY TO THOSE WHO PASSED REQUIREMENTS
+            }
+            else if (teacherScore > keeperScore) {
+                candidate.setPosition("Nauczyciel OPCzM");
+                candidate.setScore(teacherScore);
+            }
+            else {
+                candidate.setPosition("Asystent gajowego");
+                candidate.setScore(keeperScore);
+            }
         }
         return candidate;
     }
@@ -39,10 +50,17 @@ public class CandidateService {
                 .toList();
     }
 
+    public Optional<Candidate> findBySourceFile(String sourceFile) {
+        return repository.findBySourceFile(sourceFile);
+    }
+
     public List<Candidate> getAllCandidatesSorted() {
         return repository.findAll()
                 .stream()
-                .sorted(Comparator.comparingDouble(Candidate::getScore).reversed())
+                .sorted(
+                    Comparator.comparing(Candidate::isMeetsRequirements).reversed()
+                            .thenComparing(Comparator.comparingDouble(Candidate::getScore).reversed())
+                )
                 .toList();
     }
 

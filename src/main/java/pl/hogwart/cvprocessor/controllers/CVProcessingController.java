@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.hogwart.cvprocessor.model.Candidate;
+import pl.hogwart.cvprocessor.model.PythonResult;
 import pl.hogwart.cvprocessor.services.CVService;
 import pl.hogwart.cvprocessor.services.CandidateService;
 
@@ -30,14 +31,20 @@ public class CVProcessingController {
     @ResponseBody
     public String clearTable() {
         candidateService.clear();
-        return "cleared table";
+        return "Usunięto dane z bazy kandydatów!";
     }
 
     // running cv processing test
     @PostMapping("/process-test")
     @ResponseBody
-    public String processAllCVs() {
+    public String processTestCVs() {
         cvService.processAllCVs();
         return "Processed all CVs from /static/";
+    }
+
+    @PostMapping("/process")
+    @ResponseBody
+    public PythonResult processAllCVs() {
+        return cvService.processAllCVs();
     }
 }
