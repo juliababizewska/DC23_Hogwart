@@ -136,6 +136,16 @@ public class CloudService {
         return text;
     }
 
+    private String createResponseTextNoRodo(){
+        String text = "Szanowni Państwo, \n\n";
+
+        text =  text + "Ze względu na brak zgody dotyczącej przetwarzania danych osobistych nie byliśmy w stanie" +
+                "przetworzyć Państwa CV. Prosimy o przesłanie poprawnej wersji dokumentu." +
+                "\n\n Pozdrawiam, \n Automatyczny system rozpatrzeń CV HogwartCVProcessor";
+
+        return text;
+    }
+
     // Method downloads attachments to specified folder
     private String getAttachment(Message message) {
         try {
@@ -219,6 +229,27 @@ public class CloudService {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(email));
 
             message.setText(createResponseText(accepted));
+            Transport.send(message);
+            System.out.println("Log CloudService: Successfully sent a response email");
+        }
+        catch (MessagingException e) {
+            System.out.println("Log CloudService: Error: Couldn't connect to mail server via SMTP!!!");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // Method sends a response email to given applicant
+    public void sendResponseNoRODO(String email) {
+        try {
+            Session session = establishSmtpConnection();
+            Message message = new MimeMessage(session);
+
+            message.setFrom(new InternetAddress(accountMail));
+            message.setSubject("Hogwart Rekrutacja - Brak zgody dot. przetwarzania danych");
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(email));
+
+            message.setText(createResponseTextNoRodo());
+
             Transport.send(message);
             System.out.println("Log CloudService: Successfully sent a response email");
         }

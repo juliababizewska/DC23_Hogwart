@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import pl.hogwart.cvprocessor.model.Applicant;
 import pl.hogwart.cvprocessor.model.Candidate;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -101,6 +102,22 @@ public class CVService {
             return "Processed candidate: " + candidate.getFull_name();
 
         } catch (Exception e) {
+            String msg = e.getMessage();
+            if (msg != null && msg.contains("$.footer: is missing")) {
+                String json = "";
+                try {
+                    json = new String(Files.readAllBytes(Paths.get("wyniki_json/" + filename)));
+                    ObjectMapper mapper = new ObjectMapper();
+                    JsonNode jsonNode = mapper.readTree(json);
+                    cloudService.sendResponseNoRODO(jsonNode.get("email").asText());
+                } catch(IOException ioe) {
+                    System.err.println("Error scanning directory for .json files: " + ioe.getMessage());
+                }
+
+            }
+            else {
+                System.err.println("Błąd w pliku: " + msg);
+            }
             e.printStackTrace();
             return "Error processing CV " + filename + ": " + e.getMessage();
         }
