@@ -1,0 +1,50 @@
+{
+    "full_name": "Eryk Blaskowicz",
+    "email": "e.blaskowicz@gmail.pl",
+    "phone": "+48555666777",
+    "profile": "Były auror z doświadczeniem bojowym i nauczycielską pasją. Prowadzi zajęcia w sposób dynamiczny i praktyczny, z naciskiem na realne symulacje magiczne i trening odporności psychicznej. Zna zaklęcia obronne, ochronne i starożytne rytuały, które sam testował w terenie. Ceni honor, odwagę i współpracę z grupą.",
+    "education": [
+        {
+            "school": "Hogwart",
+            "period": "1988-1995",
+            "description": [
+                "Kierunek: Obrona przed Czarną Magią, Runy Starożytne, Eliksiry",
+                "Uzyskany tytuł: Czarodziej poziomu N.E.W.T.",
+                "Temat pracy końcowej: Zastosowanie zaklęć ochronnych w walce z czarną magią rytualną."
+            ]
+        }
+    ],
+    "experience": [
+        {
+            "title": "Biuro Aurorów, Ministerstwo Magii – Starszy Auror",
+            "period": "1999-2025",
+            "tasks": [
+                "Prowadzenie symulacji magicznych dla nowych rekrutów.",
+                "Udział w międzynarodowych śledztwach dotyczących czarnej magii.",
+                "Stosowanie zaawansowanych zaklęć ochronnych i barier podczas misji.",
+                "Wyszkolenie 12 rekrutów w zakresie pojedynkowania się i analizy zaklęć"
+            ]
+        },
+        {
+            "title": "Hogwart – Gościnny wykładowca przedmiotu Obrony przed Czarną Magią",
+            "period": "2015-2017",
+            "tasks": [
+                "Wprowadzenie do programu nauczania symulacji magicznych i rytuałami obronnymi.",
+                "Organizowanie turniejów pojedynków między domowych.",
+                "Prowadzenie zajęć z obrony przed istotami magicznymi i eliksirów ochronnych."
+            ]
+        }
+    ],
+    "skills": [
+        "Zaklęcia ochronne i zaklęcia obronne (specjalista poziomu mistrzowskiego)",
+        "Obrona przed istotami magicznymi",
+        "Runy oraz analiza zaklęć w starożytnych językach",
+        "Współpraca z aurorami przy misjach terenowych",
+        "Nauczanie i praca z grupą",
+        "Rytuały oraz tworzenie barier ochronnych",
+        "Odporność psychiczna, oklumencja"
+    ],
+    "footer": [
+        "Wyrażam zgodę na przetwarzanie moich danych osobowych na potrzeby rekrutacji w dowolnej instytucji magicznej lub niemagiczne"
+    ]
+}

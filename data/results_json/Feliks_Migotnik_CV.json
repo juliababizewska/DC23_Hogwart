@@ -1,0 +1,46 @@
+{
+    "full_name": "Feliks Migotnik",
+    "email": "f.migotnik@artmagia.org",
+    "phone": "+48601555404",
+    "profile": "Od ponad dekady zajmuję się tworzeniem widowisk, oraz pokazów świetlnych na potrzeby wydarzeń kulturalnych. Moją pasją jest łączenie magii z emocjami i estetyką. Cenię harmonię, kolory i dobrą energię w miejscu pracy. Szukam przestrzeni, gdzie mógłbym inspirować innych do patrzenia na magię przez pryzmat sztuki. Nowy Sącz",
+    "education": [
+        {
+            "school": "AKADEMIA SZTUK MAGICZNYCH W LUBLINIE",
+            "period": null,
+            "description": [
+                "Licencjat z magii wizualnej i estetyki aur",
+                "Praca dyplomowa: Iluzja jako forma ekspresji magicznej świadomości"
+            ]
+        }
+    ],
+    "experience": [
+        {
+            "title": "DYREKTOR ARTYSTYCZNY - TEATR ILUZJI LŚNIENIE",
+            "period": "2018-2025",
+            "tasks": [
+                "Tworzenie magicznych spektakli świetlnych i zjawisk dźwiękowo-wizualnych",
+                "Kierowanie zespołem artystów i iluzjonistów",
+                "Użycie zaklęć iluzji w dużych przestrzeniach scenicznych"
+            ]
+        },
+        {
+            "title": "ILUZJONISTA - WOLNY ZWIĄZEK ARTYSTÓW MAGICZNYCH",
+            "period": "2014-2018",
+            "tasks": [
+                "Pokazy sceniczne w całym Królestwie Północnym",
+                "Występy na wydarzeniach królewskich i festiwalach magii lekkiej",
+                "Opracowanie własnych technik wizualnych: Migotne Spektrum i Aura Mirage"
+            ]
+        }
+    ],
+    "skills": [
+        "Tworzenie i manipulacja iluzjami wizualnymi",
+        "Aura i światło – praca z kryształami optycznymi",
+        "Projektowanie scenografii magicznej",
+        "Umiejętności prezentacyjne i artystyczne",
+        "Empatia i praca z emocjami publiczności"
+    ],
+    "footer": [
+        "Wyrażam zgodę na przetwarzanie moich danych osobowych na potrzeby rekrutacji w dowolnej instytucji magicznej lub niemagicznej."
+    ]
+}

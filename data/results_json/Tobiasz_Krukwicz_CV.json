@@ -1,0 +1,52 @@
+{
+    "full_name": "Tobiasz Krukwicz",
+    "email": "tobiasz_krukwicz@gmail.com",
+    "phone": "+48456566719",
+    "education": [
+        {
+            "school": "Obrona przed Czarną Magią / Szkoła Magii i Czarodziejstwa / Hogwart, Anglia",
+            "period": "01.2015 - 07.2020",
+            "description": [
+                "Temat pracy końcowej: „Analiza struktur klątw i metody ich neutralizacji w praktyce aurorskiej”"
+            ]
+        }
+    ],
+    "experience": [
+        {
+            "title": "Badacz Artefaktów i Klątw / Departament Tajemnic – Ministerstwo Magii",
+            "period": "2002 – 2010",
+            "tasks": [
+                "Analiza zaklęć i rozbrajanie artefaktów o nieznanym pochodzeniu.",
+                "Prowadzenie dokumentacji klątw w językach starożytnych.",
+                "Uczestnictwo w misjach terenowych z aurorami."
+            ]
+        },
+        {
+            "title": "Profesor, prowadzący przedmiotu Runiczne Bariery i Ochrona przed Klątwami / Akademia Runiczna w Uppsali, Szwecja",
+            "period": "2010 - 2025",
+            "tasks": [
+                "Opracowanie systemu ochronnego opartego na runach nordyckich i zaklęciach ochronnych.",
+                "Prowadzenie badań nad artefaktami magicznymi i ich wpływem na energię istot magicznych i niemagicznych.",
+                "Współpraca z działem aurorów szwedzkiego Ministerstwa Magii."
+            ]
+        }
+    ],
+    "skills": [
+        "Wykrywanie czarnej magii",
+        "Walka magiczna",
+        "Pojedynkowanie się",
+        "Analiza zaklęć",
+        "Tworzenie barier ochronnych",
+        "Klątwy, uroki, rytuały",
+        "Eliksiry ochronne",
+        "Rozpoznawanie i eliminacja iluzji"
+    ],
+    "languages": [
+        "Wspólny – biegły",
+        "Starołaciński – średni",
+        "Gobliński – podstawowy"
+    ],
+    "footer": [
+        "Wyrażam zgodę na przetwarzanie moich danych osobowych na potrzeby rekrutacji w dowolnej instytucji magicznej lub niemagicznej."
+    ]
+}

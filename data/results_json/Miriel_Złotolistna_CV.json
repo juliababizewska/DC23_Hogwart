@@ -1,0 +1,56 @@
+{
+    "full_name": "Miriel Złotolistna",
+    "email": "miriel.zlotolistna@owlpost.com",
+    "phone": "+48123456789",
+    "profile": "Empatyczna, spokojna, niezwykle precyzyjna czarownica, łącząca magiczne rytuały elfów z klasycznymi naukami obrony. Łączy teorię z praktyką, wplatając w lekcje elementy run, medytacji i starożytnych zaklęć leczniczych. Dolina Godryka, Anglia NAUCZYCIELKA OBRONY PRZED CZARNĄ MAGIĄ",
+    "education": [
+        {
+            "school": "Szkoła Magii i Czarodziejstwa w Hogwarcie",
+            "period": "1995 - 2002",
+            "description": [
+                "Kierunek: Obrona przed Czarną Magią, Historia Magii, Runy Starożytne",
+                "Uzyskany tytuł: Magister Obrony Magicznej"
+            ]
+        }
+    ],
+    "experience": [
+        {
+            "title": "Badacz Artefaktów i Klątw",
+            "period": "2002 - 2010",
+            "tasks": [
+                "Departament Tajemnic - Ministerstwo Magii",
+                "Analiza zaklęć i rozbrajanie artefaktów o nieznanym pochodzeniu",
+                "Prowadzenie dokumentacji klątw w językach starożytnych",
+                "Uczestnictwo w misjach terenowych z aurorami"
+            ]
+        },
+        {
+            "title": "Instruktor Pojedynków i Zaklęć Obronnych",
+            "period": "2010 - 2025",
+            "tasks": [
+                "Instytut Obrony Magicznej w Pradze",
+                "Szkolenie czarodziejów w pojedynkowaniu się i koordynacji różdżki",
+                "Opracowanie cyklu zajęć “Walka Magiczna - teoria i praktyka”",
+                "Opracowanie nowoczesnych eliksirów ochronnych"
+            ]
+        }
+    ],
+    "skills": [
+        "Wykrywanie czarnej magii",
+        "Walka magiczna",
+        "Pojedynkowanie się",
+        "Analiza zaklęć",
+        "Znajomość artefaktów magicznych oraz umiejętności ich rozbrajania",
+        "Bariery obronne, klątwy, uroki",
+        "Eliksiry ochronne",
+        "Praca z grupą",
+        "Legilimencja, oklumencja"
+    ],
+    "languages": [
+        "Wspólny - biegły",
+        "Arkański - średniozaawansowany"
+    ],
+    "footer": [
+        "Wyrażam zgodę na przetwarzanie moich danych osobowych na potrzeby rekrutacji w dowolnej instytucji magicznej lub niemagicznej."
+    ]
+}
