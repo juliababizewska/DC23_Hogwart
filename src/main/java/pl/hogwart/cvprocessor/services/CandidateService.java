@@ -7,6 +7,7 @@ import pl.hogwart.cvprocessor.repositories.CandidateRepository;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Class responsible for managing candidate database
@@ -56,6 +57,10 @@ public class CandidateService {
         return repository.findAll()
                 .stream()
                 .toList();
+    }
+
+    public Optional<Candidate> findBySourceFile(String sourceFile) {
+        return repository.findBySourceFile(sourceFile);
     }
 
     public List<Candidate> getAllCandidatesSorted() {

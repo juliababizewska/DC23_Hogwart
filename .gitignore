@@ -2,6 +2,10 @@
 .gradle
 /build/
 
+#data/cv_files/*
+#data/results_json/*
+#data/*.db
+
 # Ignore Gradle GUI config
 gradle-app.setting
 

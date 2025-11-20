@@ -20,23 +20,24 @@
         function notifyCandidates() {
             fetch('/notify-candidates', { method: 'POST' })
                 .then(resp => resp.text())
-                .then(msg => showToast(msg))
-                .catch(() => showToast("Błąd wysyłania e-maili"));
+                .then(msg => showToast(msg, "success"))
+                .catch(() => showToast("Błąd wysyłania e-maili", "error"));
         }
 
-        function showToast(message) {
+        function showToast(message, status) {
             const toast = document.createElement("div");
-            toast.id = "toast";
+            toast.classList.add("toast");
             toast.textContent = message;
+
+            toast.style.background = "var(--" + status + ")";
+
             document.body.appendChild(toast);
 
             setTimeout(() => toast.classList.add("show"), 10);
             setTimeout(() => toast.classList.remove("show"), 2500);
-            setTimeout(() => toast.remove(), 3500);
+            setTimeout(() => toast.remove(), 5000);
         }
     </script>
-
-
 </head>
 <body>
 

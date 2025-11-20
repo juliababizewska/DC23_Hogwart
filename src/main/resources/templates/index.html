@@ -9,21 +9,27 @@
     <script>
         function processCVs() {
             fetch('/process', { method: 'POST' })
-                .then(resp => resp.text())
-                .then(msg => showToast(msg))
-                .catch(() => showToast("Błąd przetwarzania plików CV!"));
+                .then(resp => resp.json())
+                .then(data => {
+                    showToast(data.message, data.success ? "success" : "error");
+                })
+                .catch(() => showToast("Błąd przetwarzania plików CV!", "error"));
         }
+
         function clearDatabase() {
             fetch('/candidates/clear', { method: 'POST' })
                 .then(resp => resp.text())
-                .then(msg => showToast(msg))
-                .catch(() => showToast("Błąd usuwania z bazy!"));
+                .then(msg => showToast(msg, "success"))
+                .catch(() => showToast("Błąd usuwania z bazy!", "error"));
         }
 
-        function showToast(message) {
+        function showToast(message, status) {
             const toast = document.createElement("div");
-            toast.id = "toast";
+            toast.classList.add("toast");
             toast.textContent = message;
+
+            toast.style.background = "var(--" + status + ")";
+
             document.body.appendChild(toast);
 
             setTimeout(() => toast.classList.add("show"), 10);
