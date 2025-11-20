@@ -10,7 +10,6 @@ import com.google.api.services.drive.model.FileList;
 import jakarta.mail.search.FlagTerm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import pl.hogwart.cvprocessor.model.Applicant;
 
 import jakarta.mail.*;
 import jakarta.mail.internet.*;
@@ -185,8 +184,8 @@ public class CloudService {
     }
 
     // Method retrieves CVs from email via IMAP
-    public List<Applicant> getCVs() {
-        List<Applicant> applicants = new ArrayList<>();
+    public List<String> getCVs() {
+        List<String> cvs = new ArrayList<>();
 
         try (Store store = establishImapConnection()) {
             Folder inbox = store.getFolder("inbox");
@@ -203,7 +202,7 @@ public class CloudService {
                     String pathToCV = getAttachment(mail);
                     if(pathToCV != null) {
                         System.out.println("Log CloudService: Successfully processed an email");
-                        applicants.add(new Applicant(senderMail, pathToCV));
+                        cvs.add(pathToCV);
                     }
                     else{
                         System.out.println("Log CloudService: No attachment");
@@ -216,7 +215,7 @@ public class CloudService {
             }
 
             inbox.close(true);
-            return applicants;
+            return cvs;
         }
         catch (MessagingException e){
             System.out.println("Log CloudService: Error: Couldn't connect to mail server via IMAP!!!");
@@ -311,8 +310,14 @@ public class CloudService {
         return result;
     }
 
-    private String createFolder(String folderName) throws IOException {
+    // Method creates or finds folder with given name
+    private String createFolder(String folderName, boolean forceNew) throws IOException {
         try {
+            if(!forceNew){
+                String id = findFolderId(folderName);
+                if(id != null) return id;
+            }
+
             String name = generateFolderName(folderName);
             com.google.api.services.drive.model.File fileMetadata = new com.google.api.services.drive.model.File();
 
@@ -334,6 +339,7 @@ public class CloudService {
         return null;
     }
 
+    // Method upload files to google drive, to folder with given id
     private void uploadFile(String folderId, String filePath) throws IOException {
         Path path = Paths.get(filePath);
         File file = path.toFile();
@@ -355,9 +361,9 @@ public class CloudService {
     }
 
     //Method sends file under given path to google drive cloud storage
-    public void sendFileToCloud(String folderName, String[] pathToFiles){
+    public void sendFilesToCloud(String folderName, String[] pathToFiles, boolean forceNew){
         try{
-            String folderId = createFolder(folderName);
+            String folderId = createFolder(folderName, forceNew);
             if(folderId != null) {
                 for(String path : pathToFiles)
                     uploadFile(folderId, path);

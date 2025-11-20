@@ -7,7 +7,6 @@ import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
 import org.springframework.stereotype.Service;
-import pl.hogwart.cvprocessor.model.Applicant;
 import pl.hogwart.cvprocessor.model.Candidate;
 import pl.hogwart.cvprocessor.model.PythonResult;
 
@@ -41,19 +40,9 @@ public class CVService {
 
     // Processes all PDF files from /static/ directory
     public PythonResult processAllCVs() {
-        // cloud service test block
-        List<Applicant> testList = cloudService.getCVs();
-        boolean acceptanceFlag = false;
-        boolean positionFlag = false;
-        for (Applicant applicant : testList) {
-            String tmp = applicant.getEmail();
-            cloudService.sendResponse(tmp, tmp, positionFlag, acceptanceFlag);
-            acceptanceFlag = !acceptanceFlag;
-            positionFlag = !positionFlag;
-            String[] testArray = {applicant.getPathToCV()};
-            cloudService.sendFileToCloud(applicant.getEmail(), testArray);
-        }
-        // end of cloud service test block
+        // Fetching cvs from mail inbox and sending them to cloud archive
+        String[] testList = cloudService.getCVs().toArray(new String[0]);
+        cloudService.sendFilesToCloud("CVs", testList, false);
 
         // run python script to process the CV documents and extract data to JSON files
         // the script searches for documents in 'data/cv_files' directory and  outputs them to 'data/results_json'
@@ -97,7 +86,8 @@ public class CVService {
             System.out.println("Processing file: " + filename);
 
             // reading the json file extracted from received CV
-            String json = new String(Files.readAllBytes(Paths.get("data/results_json/" + filename)));
+            String path = "data/results_json/" + filename;
+            String json = new String(Files.readAllBytes(Paths.get(path)));
 
             ObjectMapper mapper = new ObjectMapper();
             JsonNode jsonNode = mapper.readTree(json);
@@ -109,6 +99,7 @@ public class CVService {
 
                 Set<ValidationMessage> errors = schema.validate(jsonNode);
                 if (!errors.isEmpty()) {
+                    cloudService.sendFilesToCloud("CV_Schemas_Invalid", new String[]{path}, false);
                     // TODO: send rejection e-mail?
                     String message = errors.stream()
                             .map(ValidationMessage::getMessage)
@@ -129,6 +120,7 @@ public class CVService {
 
             candidateService.saveCandidate(candidate);
             System.out.println("Processed candidate: " + candidate.getFull_name());
+            cloudService.sendFilesToCloud("CV_Schemas_Valid", new String[]{path}, false);
             return "Processed candidate: " + candidate.getFull_name();
 
         } catch (Exception e) {
