@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 @Service
 public class CloudService {
     private final String subjectRegex = "Hogwart Rekrutacja.*";
+    private final String mailTemplatePath = "src/main/resources/mailTemplates";
     private final String saveDir = "data/cv_files";
 
     //Credentials to google account
@@ -121,18 +122,24 @@ public class CloudService {
         return session;
     }
 
-    private String createResponseText(boolean accepted){
-        String text = "Szanowni Państwo, \n\n";
+    private String createResponseText(String fullName, boolean isTeacher, boolean accepted){
+        String fileName = isTeacher ? "opcm" : "ag";
+        fileName = accepted ? fileName + "_accepted" : fileName + "_rejected";
+        fileName = fileName + ".html";
 
-        if(accepted) {
-            text = text + "Gratulujemy przejścia do następnego etapu rekrutacji.";
+        Path template = Paths.get(mailTemplatePath, fileName);
+
+        String text = null;
+
+        try {
+            text = Files.readString(template);
+            text = text.replace("**[IMIE_NAZWISKO]**", fullName);
         }
-        else{
-            text = text + "Z przykrością informujemy że odrzuciliśmy twoją kandydaturę na aplikowane "
-                    + "stanowisko. Życzymy powodzenia w dalszych staraniach o zabezpieczenie zatrudnienia.";
+        catch (IOException e){
+            text = "Twoje CV spowodowało błąd systemu rekrutacyjnego!!!!\n"
+            + "Twoja kandydatura zostaje odrzucona oraz Twoje konto zostanie obciążone kosztami naprawy.";
         }
 
-        text = text + "\n\n Pozdrawiam, \n Automatyczny system rozpatrzeń CV HogwartCVProcessor";
         return text;
     }
 
@@ -219,7 +226,7 @@ public class CloudService {
     }
 
     // Method sends a response email to given applicant
-    public void sendResponse(String email, boolean accepted) {
+    public void sendResponse(String email, String fullName, boolean isTeacher, boolean accepted) {
         try {
             Session session = establishSmtpConnection();
             Message message = new MimeMessage(session);
@@ -228,7 +235,13 @@ public class CloudService {
             message.setSubject("Hogwart Rekrutacja - Wynik pierwszego etapu.");
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(email));
 
-            message.setText(createResponseText(accepted));
+            Multipart multipart = new MimeMultipart("alternative");
+            MimeBodyPart body = new MimeBodyPart();
+
+            body.setContent(createResponseText(fullName, isTeacher, accepted),"text/html; charset=utf-8");
+            multipart.addBodyPart(body);
+
+            message.setContent(multipart);
             Transport.send(message);
             System.out.println("Log CloudService: Successfully sent a response email");
         }
