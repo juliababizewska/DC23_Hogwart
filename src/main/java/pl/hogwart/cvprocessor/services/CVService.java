@@ -106,6 +106,22 @@ public class CVService {
                             .collect(Collectors.joining("; "));
                     throw new RuntimeException("Invalid CV JSON (" + filename + "): " + message);
                 }
+            } catch (Exception e) {
+                String msg = e.getMessage();
+                if (msg != null && msg.contains("$.footer: is missing")) {
+                    String jsonFile = "";
+                    try {
+                        jsonFile = new String(Files.readAllBytes(Paths.get("data/results_json/" + filename)));
+                        JsonNode jsonNodeRODO = mapper.readTree(jsonFile);
+                        System.out.println(jsonNode.get("email"));
+                        cloudService.sendResponseNoRODO(jsonNodeRODO.get("email").asText());
+                    } catch(IOException ioe) {
+                        System.err.println("Error scanning directory for .json files: " + ioe.getMessage());
+                    }
+                }
+                else {
+                    System.err.println("Błąd w pliku: " + msg);
+                }
             }
 
             // mapping JSON to Candidate
@@ -124,22 +140,6 @@ public class CVService {
             return "Processed candidate: " + candidate.getFull_name();
 
         } catch (Exception e) {
-            String msg = e.getMessage();
-            if (msg != null && msg.contains("$.footer: is missing")) {
-                String json = "";
-                try {
-                    json = new String(Files.readAllBytes(Paths.get("wyniki_json/" + filename)));
-                    ObjectMapper mapper = new ObjectMapper();
-                    JsonNode jsonNode = mapper.readTree(json);
-                    cloudService.sendResponseNoRODO(jsonNode.get("email").asText());
-                } catch(IOException ioe) {
-                    System.err.println("Error scanning directory for .json files: " + ioe.getMessage());
-                }
-
-            }
-            else {
-                System.err.println("Błąd w pliku: " + msg);
-            }
             e.printStackTrace();
             return "Error processing CV " + filename + ": " + e.getMessage();
         }
