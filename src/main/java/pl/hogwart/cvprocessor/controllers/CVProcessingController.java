@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.hogwart.cvprocessor.model.Candidate;
+import pl.hogwart.cvprocessor.model.PythonResult;
 import pl.hogwart.cvprocessor.services.CVService;
 import pl.hogwart.cvprocessor.services.CandidateService;
 
@@ -43,8 +44,7 @@ public class CVProcessingController {
 
     @PostMapping("/process")
     @ResponseBody
-    public String processAllCVs() {
-        cvService.processAllCVs();
-        return "Processed all received CVs [now static, downloading module is not connected yet]";
+    public PythonResult processAllCVs() {
+        return cvService.processAllCVs();
     }
 }

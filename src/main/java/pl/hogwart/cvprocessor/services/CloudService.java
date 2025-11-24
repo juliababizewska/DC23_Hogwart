@@ -10,7 +10,6 @@ import com.google.api.services.drive.model.FileList;
 import jakarta.mail.search.FlagTerm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import pl.hogwart.cvprocessor.model.Applicant;
 
 import jakarta.mail.*;
 import jakarta.mail.internet.*;
@@ -32,7 +31,8 @@ import java.util.regex.Pattern;
 @Service
 public class CloudService {
     private final String subjectRegex = "Hogwart Rekrutacja.*";
-    private final String saveDir = "src/main/resources/cvs";
+    private final String mailTemplatePath = "src/main/resources/mailTemplates";
+    private final String saveDir = "data/cv_files";
 
     //Credentials to google account
     private final String password;
@@ -121,18 +121,24 @@ public class CloudService {
         return session;
     }
 
-    private String createResponseText(boolean accepted){
-        String text = "Szanowni Państwo, \n\n";
+    private String createResponseText(String fullName, boolean isTeacher, boolean accepted){
+        String fileName = isTeacher ? "opcm" : "ag";
+        fileName = accepted ? fileName + "_accepted" : fileName + "_rejected";
+        fileName = fileName + ".html";
 
-        if(accepted) {
-            text = text + "Gratulujemy przejścia do następnego etapu rekrutacji.";
+        Path template = Paths.get(mailTemplatePath, fileName);
+
+        String text = null;
+
+        try {
+            text = Files.readString(template);
+            text = text.replace("**[IMIE_NAZWISKO]**", fullName);
         }
-        else{
-            text = text + "Z przykrością informujemy że odrzuciliśmy twoją kandydaturę na aplikowane "
-                    + "stanowisko. Życzymy powodzenia w dalszych staraniach o zabezpieczenie zatrudnienia.";
+        catch (IOException e){
+            text = "Twoje CV spowodowało błąd systemu rekrutacyjnego!!!!\n"
+            + "Twoja kandydatura zostaje odrzucona oraz Twoje konto zostanie obciążone kosztami naprawy.";
         }
 
-        text = text + "\n\n Pozdrawiam, \n Automatyczny system rozpatrzeń CV HogwartCVProcessor";
         return text;
     }
 
@@ -178,8 +184,8 @@ public class CloudService {
     }
 
     // Method retrieves CVs from email via IMAP
-    public List<Applicant> getCVs() {
-        List<Applicant> applicants = new ArrayList<>();
+    public List<String> getCVs() {
+        List<String> cvs = new ArrayList<>();
 
         try (Store store = establishImapConnection()) {
             Folder inbox = store.getFolder("inbox");
@@ -196,7 +202,7 @@ public class CloudService {
                     String pathToCV = getAttachment(mail);
                     if(pathToCV != null) {
                         System.out.println("Log CloudService: Successfully processed an email");
-                        applicants.add(new Applicant(senderMail, pathToCV));
+                        cvs.add(pathToCV);
                     }
                     else{
                         System.out.println("Log CloudService: No attachment");
@@ -209,7 +215,7 @@ public class CloudService {
             }
 
             inbox.close(true);
-            return applicants;
+            return cvs;
         }
         catch (MessagingException e){
             System.out.println("Log CloudService: Error: Couldn't connect to mail server via IMAP!!!");
@@ -219,7 +225,7 @@ public class CloudService {
     }
 
     // Method sends a response email to given applicant
-    public void sendResponse(String email, boolean accepted) {
+    public void sendResponse(String email, String fullName, boolean isTeacher, boolean accepted) {
         try {
             Session session = establishSmtpConnection();
             Message message = new MimeMessage(session);
@@ -228,7 +234,13 @@ public class CloudService {
             message.setSubject("Hogwart Rekrutacja - Wynik pierwszego etapu.");
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(email));
 
-            message.setText(createResponseText(accepted));
+            Multipart multipart = new MimeMultipart("alternative");
+            MimeBodyPart body = new MimeBodyPart();
+
+            body.setContent(createResponseText(fullName, isTeacher, accepted),"text/html; charset=utf-8");
+            multipart.addBodyPart(body);
+
+            message.setContent(multipart);
             Transport.send(message);
             System.out.println("Log CloudService: Successfully sent a response email");
         }
@@ -298,8 +310,14 @@ public class CloudService {
         return result;
     }
 
-    private String createFolder(String folderName) throws IOException {
+    // Method creates or finds folder with given name
+    private String createFolder(String folderName, boolean forceNew) throws IOException {
         try {
+            if(!forceNew){
+                String id = findFolderId(folderName);
+                if(id != null) return id;
+            }
+
             String name = generateFolderName(folderName);
             com.google.api.services.drive.model.File fileMetadata = new com.google.api.services.drive.model.File();
 
@@ -321,6 +339,7 @@ public class CloudService {
         return null;
     }
 
+    // Method upload files to google drive, to folder with given id
     private void uploadFile(String folderId, String filePath) throws IOException {
         Path path = Paths.get(filePath);
         File file = path.toFile();
@@ -342,9 +361,9 @@ public class CloudService {
     }
 
     //Method sends file under given path to google drive cloud storage
-    public void sendFileToCloud(String folderName, String[] pathToFiles){
+    public void sendFilesToCloud(String folderName, String[] pathToFiles, boolean forceNew){
         try{
-            String folderId = createFolder(folderName);
+            String folderId = createFolder(folderName, forceNew);
             if(folderId != null) {
                 for(String path : pathToFiles)
                     uploadFile(folderId, path);

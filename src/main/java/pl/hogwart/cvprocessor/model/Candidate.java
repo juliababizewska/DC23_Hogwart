@@ -26,6 +26,8 @@ public class Candidate {
     private String position;
     private boolean meetsRequirements;
     private double score;
+
+    @Column(unique = true)
     private String sourceFile;
 
     @Lob

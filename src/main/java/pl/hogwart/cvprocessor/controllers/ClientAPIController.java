@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.hogwart.cvprocessor.model.Candidate;
 import pl.hogwart.cvprocessor.services.CandidateService;
+import pl.hogwart.cvprocessor.services.CloudService;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
 public class ClientAPIController {
 
     private final CandidateService candidateService;
+    private final CloudService cloudService;
 
     @GetMapping("/")
     public String main() {
@@ -36,7 +38,16 @@ public class ClientAPIController {
     @PostMapping("/notify-candidates")
     @ResponseBody
     public String notifyCandidates() {
-        // TODO: Google API - send emails
+        List<Candidate> candidates = candidateService.getAllCandidatesSorted();
+
+        for (Candidate candidate : candidates) {
+            cloudService.sendResponse(
+                    candidate.getEmail(),
+                    candidate.getFull_name(),
+                    candidate.getPosition().compareTo("Nauczyciel OPCzM") == 0,
+                    candidate.isMeetsRequirements()
+            );
+        }
         return "Wysłano wiadomości e-mail do kandydatów. [TODO: ClientAPIController.java]";
     }
 
