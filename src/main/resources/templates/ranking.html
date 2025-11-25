@@ -4,6 +4,7 @@
     <meta charset="utf-8"/>
     <title>Ranking Kandydatów</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Marcellus+SC&display=swap" rel="stylesheet">
 
     <script>
         function toggleDetails(id) {
@@ -19,9 +20,14 @@
     <script>
         function notifyCandidates() {
             fetch('/notify-candidates', { method: 'POST' })
-                .then(resp => resp.text())
+                .then(resp => {
+                    if (!resp.ok) {
+                        return resp.text().then(msg => { throw new Error(msg); });
+                    }
+                    return resp.text();
+                })
                 .then(msg => showToast(msg, "success"))
-                .catch(() => showToast("Błąd wysyłania e-maili", "error"));
+                .catch(err => showToast(err.message, "error"));
         }
 
         function showToast(message, status) {
@@ -164,5 +170,8 @@
 
 </div>
 
+<footer class="footer">
+    © Hogwart (DC gr. 2), 2025
+</footer>
 </body>
 </html>

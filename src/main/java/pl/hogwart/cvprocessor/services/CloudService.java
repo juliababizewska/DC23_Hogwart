@@ -152,6 +152,16 @@ public class CloudService {
         return text;
     }
 
+    private String createResponseTextInvalidSchema(String cause){
+        String text = "Szanowni Państwo, \n\n";
+
+        text =  text + "Z przykrością informujemy, że nie byliśmy w stanie przetworzyć Państwa CV. Powód:\n" +
+        cause + "\nProsimy o zapoznanie się z wytycznymi i przesłanie poprawnej wersji dokumentu." +
+                "\n\n Pozdrawiam, \n Automatyczny system rozpatrzeń CV HogwartCVProcessor";
+
+        return text;
+    }
+
     // Method downloads attachments to specified folder
     private String getAttachment(Message message) {
         try {
@@ -271,6 +281,27 @@ public class CloudService {
         }
     }
 
+    // Method sends a response email to given applicant
+    public void sendResponseInvalidSchema(String email, String cause) {
+        try {
+            Session session = establishSmtpConnection();
+            Message message = new MimeMessage(session);
+
+            message.setFrom(new InternetAddress(accountMail));
+            message.setSubject("Hogwart Rekrutacja - Błąd przetwarzania CV");
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(email));
+
+            message.setText(createResponseTextInvalidSchema(cause));
+
+            Transport.send(message);
+            System.out.println("Log CloudService: Successfully sent a response email");
+        }
+        catch (MessagingException e) {
+            System.out.println("Log CloudService: Error: Couldn't connect to mail server via SMTP!!!");
+            System.out.println(e.getMessage());
+        }
+    }
+
     // Method checks if given folder name is already in use on the drive
     private String findFolderId(String dirName){
         try{
@@ -285,7 +316,7 @@ public class CloudService {
             List<com.google.api.services.drive.model.File> files = result.getFiles();
 
             if(files != null && !files.isEmpty()) {
-                System.out.println("Log CloudService: Found a folder om Google Drive");
+                System.out.println("Log CloudService: Found a folder on Google Drive");
                 return files.get(0).getId();
             }
         }

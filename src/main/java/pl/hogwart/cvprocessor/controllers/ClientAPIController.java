@@ -1,6 +1,8 @@
 package pl.hogwart.cvprocessor.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,18 +39,31 @@ public class ClientAPIController {
 
     @PostMapping("/notify-candidates")
     @ResponseBody
-    public String notifyCandidates() {
+    public ResponseEntity<String> notifyCandidates() {
         List<Candidate> candidates = candidateService.getAllCandidatesSorted();
 
-        for (Candidate candidate : candidates) {
-            cloudService.sendResponse(
-                    candidate.getEmail(),
-                    candidate.getFull_name(),
-                    candidate.getPosition().compareTo("Nauczyciel OPCzM") == 0,
-                    candidate.isMeetsRequirements()
-            );
+        if (candidates.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Brak kandydatów do powiadomienia");
         }
-        return "Wysłano wiadomości e-mail do kandydatów. [TODO: ClientAPIController.java]";
+        try {
+            for (Candidate candidate : candidates) {
+                cloudService.sendResponse(
+                        candidate.getEmail(),
+                        candidate.getFull_name(),
+                        "Nauczyciel OPCzM".equals(candidate.getPosition()),
+                        candidate.isMeetsRequirements()
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Błąd podczas wysyłania e-maili: " + e.getMessage());
+        }
+
+        return ResponseEntity.ok("Wysłano wiadomości e-mail do kandydatów");
     }
 
 }

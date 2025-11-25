@@ -6,19 +6,19 @@ import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.hogwart.cvprocessor.model.Candidate;
+import pl.hogwart.cvprocessor.model.ProcessedFile;
 import pl.hogwart.cvprocessor.model.PythonResult;
+import pl.hogwart.cvprocessor.repositories.ProcessedFileRepository;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -26,17 +26,13 @@ import java.util.stream.Collectors;
  * Sends file to the pythonIntegrationService and maps received data to Candidate object
  */
 @Service
+@RequiredArgsConstructor
 public class CVService {
 
     private final PythonIntegrationService pythonService;
     private final CandidateService candidateService;
     private final CloudService cloudService;
-
-    public CVService(PythonIntegrationService pythonService, CandidateService candidateService, CloudService cloudService) {
-        this.pythonService = pythonService;
-        this.candidateService = candidateService;
-        this.cloudService = cloudService;
-    }
+    private final ProcessedFileRepository processedFileRepository;
 
     // Processes all PDF files from /static/ directory
     public PythonResult processAllCVs() {
@@ -70,17 +66,18 @@ public class CVService {
 
         result.addLogs(cvProcessingLogs);
         result.setMessage("Przetwarzanie CV zakończone");
-        System.out.println(result.toString());
+        System.out.println(result.getMessage() + "\n");
         return result;
     }
 
     public String processCV(String filename) {
         try {
             // checking if file wasn't already processed
-            Optional<Candidate> existing = candidateService.findBySourceFile(filename);
-            if (existing.isPresent()) {
-                System.out.println("Skipping " + filename + " — was already processed.");
-                return "Skipping " + filename + " — file was already processed.";
+            if (processedFileRepository.existsById(filename)) {
+                String feedback = "Skipping " + filename + " — file already processed (" +
+                        processedFileRepository.findById(filename).get().getStatus() + ").";
+                System.out.println(feedback);
+                return feedback;
             }
 
             System.out.println("Processing file: " + filename);
@@ -93,35 +90,23 @@ public class CVService {
             JsonNode jsonNode = mapper.readTree(json);
 
             // validation
-            try (InputStream schemaStream = getClass().getResourceAsStream("/static/schemas/cv_json_schema.json")) {
-                JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V202012);
-                JsonSchema schema = factory.getSchema(schemaStream);
+            InputStream schemaStream = getClass().getResourceAsStream("/static/schemas/cv_json_schema.json");
+            JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V202012);
+            JsonSchema schema = factory.getSchema(schemaStream);
 
-                Set<ValidationMessage> errors = schema.validate(jsonNode);
-                if (!errors.isEmpty()) {
-                    cloudService.sendFilesToCloud("CV_Schemas_Invalid", new String[]{path}, false);
-                    // TODO: send rejection e-mail?
-                    String message = errors.stream()
-                            .map(ValidationMessage::getMessage)
-                            .collect(Collectors.joining("; "));
-                    throw new RuntimeException("Invalid CV JSON (" + filename + "): " + message);
-                }
-            } catch (Exception e) {
-                String msg = e.getMessage();
-                if (msg != null && msg.contains("$.footer: is missing")) {
-                    String jsonFile = "";
-                    try {
-                        jsonFile = new String(Files.readAllBytes(Paths.get("data/results_json/" + filename)));
-                        JsonNode jsonNodeRODO = mapper.readTree(jsonFile);
-                        System.out.println(jsonNode.get("email"));
-                        cloudService.sendResponseNoRODO(jsonNodeRODO.get("email").asText());
-                    } catch(IOException ioe) {
-                        System.err.println("Error scanning directory for .json files: " + ioe.getMessage());
-                    }
+            Set<ValidationMessage> errors = schema.validate(jsonNode);
+            if (!errors.isEmpty()) {
+                cloudService.sendFilesToCloud("CV_Schemas_Invalid", new String[]{path}, false);
+                String message = errors.stream()
+                        .map(ValidationMessage::getMessage)
+                        .collect(Collectors.joining("; "));
+                if (message != null && message.contains("$.footer: is missing")) {
+                    cloudService.sendResponseNoRODO(jsonNode.get("email").asText());
                 }
                 else {
-                    System.err.println("Błąd w pliku: " + msg);
+                    cloudService.sendResponseInvalidSchema(jsonNode.get("email").asText(), message);
                 }
+                throw new RuntimeException(message + "\n Wysyłanie wiadomości zwrotnej do " + jsonNode.get("email"));
             }
 
             // mapping JSON to Candidate
@@ -137,10 +122,13 @@ public class CVService {
             candidateService.saveCandidate(candidate);
             System.out.println("Processed candidate: " + candidate.getFull_name());
             cloudService.sendFilesToCloud("CV_Schemas_Valid", new String[]{path}, false);
+
+            processedFileRepository.save(new ProcessedFile(filename, LocalDateTime.now().toString(), "valid"));
             return "Processed candidate: " + candidate.getFull_name();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Error processing CV " + filename + ": " + e.getMessage());
+            processedFileRepository.save(new ProcessedFile(filename, LocalDateTime.now().toString(), "invalid"));
             return "Error processing CV " + filename + ": " + e.getMessage();
         }
     }

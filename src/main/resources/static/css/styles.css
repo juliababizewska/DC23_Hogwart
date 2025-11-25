@@ -2,26 +2,34 @@
     --bg:#f6f8fb;
     --card:#ffffff;
     --muted:#6b7280;
-    --accent:#2563eb;
-    --success: rgb(83, 189, 122);
-    --error:#ef4444;
-    --danger:#ef4444;
+    --accent: #c09e65;
+    --dark-accent: #85704e;
+    --success: rgb(128, 171, 92);
+    --error: #ef4a44;
+    --danger: #ef5844;
     --border:#e6e9ef;
     --radius:12px;
-    --text:#1f2937;
+    --text: #372a1f;
+}
+html, body {
+    height: 100%;
+    margin: 0;
 }
 
 body{
-    margin:0;
+    display: flex;
+    flex-direction: column;
     font-family:'Inter',sans-serif;
-    background:var(--bg);
+    background: url('../img/hogwarts-bg.png') no-repeat center center fixed;
+    background-size: cover;
     color:var(--text);
 }
 
 .container{
-    max-width:1200px;
+    width:1200px;
     margin:30px auto;
     padding:16px;
+    flex: 1;
 }
 
 .card{
@@ -31,6 +39,19 @@ body{
     border:1px solid var(--border);
     box-shadow:0 4px 12px rgba(0,0,0,0.04);
 }
+h1 {
+    font-family: 'Marcellus SC', serif;
+    font-size: 2rem;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+
+.subtitle {
+    font-family: 'MedievalSharp', cursive;
+    color: var(--dark-accent)
+}
+
+
 
 .table-wrap{
     overflow-x:auto;
@@ -154,7 +175,7 @@ tbody tr:hover td{
 }
 
 .btn-primary:hover{
-    background:#1e4fd1;
+    background: var(--dark-accent);
 }
 
 .btn-danger{
@@ -277,4 +298,16 @@ tbody tr:hover td{
     opacity: 0;
     transform: translateY(-20px);
 }
+
+.footer {
+    background-color: var(--accent);
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    font-family: 'Marcellus SC', serif;
+    font-size: 1rem;
+    margin-top: 40px;
+    border-top: 2px solid rgba(0,0,0,0.2);
+ }
+
 

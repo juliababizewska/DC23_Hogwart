@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.hogwart.cvprocessor.model.Candidate;
 import pl.hogwart.cvprocessor.model.PythonResult;
+import pl.hogwart.cvprocessor.repositories.ProcessedFileRepository;
 import pl.hogwart.cvprocessor.services.CVService;
 import pl.hogwart.cvprocessor.services.CandidateService;
 
@@ -18,6 +19,7 @@ public class CVProcessingController {
 
     private final CVService cvService;
     private final CandidateService candidateService;
+    private final ProcessedFileRepository processedFileRepository;
 
     // saving candidate to database
     @PostMapping("/candidates") // POST to http://localhost:8080/candidates
@@ -31,6 +33,7 @@ public class CVProcessingController {
     @ResponseBody
     public String clearTable() {
         candidateService.clear();
+        processedFileRepository.deleteAll();
         return "Usunięto dane z bazy kandydatów!";
     }
 

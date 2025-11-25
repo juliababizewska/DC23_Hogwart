@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import pl.hogwart.cvprocessor.model.Candidate;
 import pl.hogwart.cvprocessor.model.Position;
 import pl.hogwart.cvprocessor.repositories.CandidateRepository;
+import pl.hogwart.cvprocessor.repositories.ProcessedFileRepository;
 
 import java.util.Comparator;
 import java.util.List;
@@ -43,13 +44,22 @@ public class CandidateService {
 
 
     public void markMeetsRequirements() {
+        // reset already qualified
+        repository.findAll().forEach(c -> {
+            c.setMeetsRequirements(false);
+            repository.save(c);
+        });
+
+        // mark only those who meet requirements now
         List<Candidate> teachers = findAllMeetsRequirementsCandidates(true);
         List<Candidate> keepers = findAllMeetsRequirementsCandidates(false);
         for  (Candidate candidate : teachers) {
             candidate.setMeetsRequirements(true);
+            repository.save(candidate);
         }
         for  (Candidate candidate : keepers) {
             candidate.setMeetsRequirements(true);
+            repository.save(candidate);
         }
     }
 
